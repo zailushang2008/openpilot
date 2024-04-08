@@ -1,3 +1,7 @@
+#ifndef ENABLE_MAPS
+#define ENABLE_MAPS
+#endif
+
 #include "selfdrive/ui/qt/onroad.h"
 
 #include <algorithm>
@@ -322,6 +326,8 @@ AnnotatedCameraWidget::AnnotatedCameraWidget(VisionStreamType type, QWidget* par
   main_layout->addWidget(map_settings_btn, 0, Qt::AlignBottom | Qt::AlignRight);
 
   dm_img = loadPixmap("../assets/img_driver_face.png", {img_size + 5, img_size + 5});
+
+  leadSpeed = 0.0;
 }
 
 void AnnotatedCameraWidget::updateState(const UIState &s) {
@@ -347,6 +353,17 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   float v_ego = v_ego_cluster_seen ? car_state.getVEgoCluster() : car_state.getVEgo();
   speed = cs_alive ? std::max<float>(0.0, v_ego) : 0.0;
   speed *= s.scene.is_metric ? MS_TO_KPH : MS_TO_MPH;
+
+  // engine RPM
+  engineRPM = int(car_state.getEngineRpm());
+
+  // lead speed
+  auto radar_state = sm["radarState"].getRadarState();
+  auto lead_one = radar_state.getLeadOne();
+  leadSpeed = lead_one.getVLead();
+  leadDistance = lead_one.getDRel();
+  leadSpeed = std::max<float>(0.0, leadSpeed);
+  leadSpeed *= s.scene.is_metric ? MS_TO_KPH : MS_TO_MPH;
 
   auto speed_limit_sign = nav_instruction.getSpeedLimitSign();
   speedLimit = nav_alive ? nav_instruction.getSpeedLimit() : 0.0;
@@ -470,6 +487,16 @@ void AnnotatedCameraWidget::drawHud(QPainter &p) {
   drawText(p, rect().center().x(), 210, speedStr);
   p.setFont(InterFont(66));
   drawText(p, rect().center().x(), 290, speedUnit, 200);
+
+  //lead speed distance
+  QString leadSpeedDistance = QString::number(std::nearbyint(leadSpeed)) + " / " + QString::number(leadDistance, 'f', 2);
+  p.setFont(InterFont(66));
+  drawText(p, rect().center().x(), 380, leadSpeedDistance, 200);
+
+  //engine RPM
+  QString engineRPMStr  = QString::number(engineRPM);
+  p.setFont(InterFont(43));
+  drawText(p, rect().center().x()*2-120, 380, engineRPMStr, 200);
 
   p.restore();
 }

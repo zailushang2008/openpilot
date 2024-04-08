@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QWidget>
+#include <QListView>
 
 #include "selfdrive/ui/ui.h"
 #include "selfdrive/ui/qt/util.h"
@@ -68,12 +69,20 @@ public slots:
   void expandToggleDescription(const QString &param);
 
 private slots:
+  void onSelectedCar(const QString &text);
+
+  void itemClicked(QModelIndex index);
+
+
   void updateState(const UIState &s);
 
 private:
   Params params;
   std::map<std::string, ParamControl*> toggles;
   ButtonParamControl *long_personality_setting;
+
+  QListView *listView;
+  QPushButton *carBtn;
 
   void updateToggles();
 };
@@ -98,4 +107,18 @@ private:
 
   Params params;
   ParamWatcher *fs_watch;
+};
+
+class Advance : public ListWidget {
+  Q_OBJECT
+public:
+  explicit Advance(QWidget* parent = nullptr);
+
+private:
+//  void showEvent(QShowEvent *event) override;
+
+  void updateState(const UIState &s);
+
+  void checkForUpdates(){};
+
 };

@@ -305,6 +305,14 @@
         <source>PAIR</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>openpilot requires the device to be mounted within 4掳 left or right and within 5掳 up or 9掳 down. openpilot is continuously calibrating, resetting is rarely required.</source>
+        <translation type="obsolete">Damit Openpilot funktioniert, darf die Installationsposition nicht mehr als 4° nach rechts/links, 5° nach oben und 9° nach unten abweichen. Openpilot kalibriert sich durchgehend, ein Zurücksetzen ist selten notwendig. {4掳?} {5掳?} {9掳?}</translation>
+    </message>
+    <message>
+        <source> Your device is pointed %1掳 %2 and %3掳 %4.</source>
+        <translation type="obsolete"> Deine Geräteausrichtung ist %1° %2 und %3° %4. {1掳?} {2 ?} {3掳?} {4.?}</translation>
+    </message>
 </context>
 <context>
     <name>DriverViewWindow</name>
@@ -699,6 +707,10 @@ This may take up to a minute.</source>
     <message>
         <source>Software</source>
         <translation>Software</translation>
+    </message>
+    <message>
+        <source>Advance</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

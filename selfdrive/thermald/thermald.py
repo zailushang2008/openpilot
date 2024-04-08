@@ -275,9 +275,15 @@ def thermald_thread(end_event, hw_queue) -> None:
     all_comp_temp = all_temp_filter.update(max(temp_sources))
     msg.deviceState.maxTempC = all_comp_temp
 
+    with open("/data/params/d/Temperature", 'w') as f:
+      f.write(str(int(all_comp_temp)))
+    with open("/data/params/d/TemperatureAll", 'w') as f:
+      f.write(str(temp_sources))
+
     if fan_controller is not None:
       msg.deviceState.fanSpeedPercentDesired = fan_controller.update(all_comp_temp, onroad_conditions["ignition"])
-
+    if msg.deviceState.fanSpeedPercentDesired > 60:
+      msg.deviceState.fanSpeedPercentDesired = 63
     is_offroad_for_5_min = (started_ts is None) and ((not started_seen) or (off_ts is None) or (time.monotonic() - off_ts > 60 * 5))
     if is_offroad_for_5_min and offroad_comp_temp > OFFROAD_DANGER_TEMP:
       # if device is offroad and already hot without the extra onroad load,

@@ -120,12 +120,27 @@ def manager_thread() -> None:
 
   params = Params()
 
+  dp_device_is_clone = False
   ignore: list[str] = []
   if params.get("DongleId", encoding='utf8') in (None, UNREGISTERED_DONGLE_ID):
     ignore += ["manage_athenad", "uploader"]
+    dp_device_is_clone = True
   if os.getenv("NOBOARD") is not None:
     ignore.append("pandad")
   ignore += [x for x in os.getenv("BLOCK", "").split(",") if len(x) > 0]
+
+  #params.put_bool("dp_device_is_clone", dp_device_is_clone)
+  fp_device_dm_unavailable = params.get_bool("FpDeviceDmUnavailable")
+  if fp_device_dm_unavailable:
+    ignore += ["uploader", "dmonitoringd", "dmonitoringmodeld"]
+  elif dp_device_is_clone:
+    ignore += ["uploader", "dpdmonitoringd"]
+  else:
+    ignore += ["dpdmonitoringd"]
+
+  ignore += ["manage_athenad", "uploader"]
+  if not params.get_bool("FpAliYunDrive"):
+    ignore += ["aliyun"]
 
   sm = messaging.SubMaster(['deviceState', 'carParams'], poll='deviceState')
   pm = messaging.PubMaster(['managerState'])

@@ -1,3 +1,7 @@
+#ifndef ENABLE_MAPS
+#define ENABLE_MAPS
+#endif
+
 #include <cassert>
 #include <cmath>
 #include <string>
@@ -14,6 +18,14 @@
 #include "selfdrive/ui/qt/widgets/prime.h"
 #include "selfdrive/ui/qt/widgets/scrollview.h"
 #include "selfdrive/ui/qt/widgets/ssh_keys.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <QListView>
+#include <QLabel>
+#include <QStandardItemModel>
+#include <QScrollBar>
+
 
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon
@@ -91,6 +103,52 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // set up uiState update for personality setting
   QObject::connect(uiState(), &UIState::uiUpdate, this, &TogglesPanel::updateState);
 
+  carBtn = new QPushButton( "--------------------Select Car --------------------", this);
+ //carBtn->setFixedSize(1500, 80);
+
+//  connect(carBtn, &ButtonControl::showDescriptionEvent, this, &DevicePanel::updateCalibDescription);
+  connect(carBtn, &QPushButton::clicked, [&]() {
+    for(auto &v:toggles)
+      v.second->hide();
+    long_personality_setting->hide();
+    listView->show();
+  });
+  addItem(carBtn);
+
+  listView = new QListView(this);
+  QStandardItemModel  *ItemModel = new QStandardItemModel(this);
+
+  connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(itemClicked(QModelIndex)));
+
+
+
+  QStringList strList;
+
+  FILE *in= fopen("/data/openpilot/carlist.txt", "r");
+  char buf[1024];
+
+  while (fgets(buf, sizeof(buf), in) != NULL)
+  {
+      printf("%s", buf);
+      strList.append(buf);
+  }
+  fclose(in);
+
+  int nCount = strList.size();
+  for(int i = 0; i < nCount; i++)
+  {
+      QString string = static_cast<QString>(strList.at(i));
+      QStandardItem *item = new QStandardItem(string);
+      ItemModel->appendRow(item);
+  }
+  listView->setModel(ItemModel);
+  listView->setFixedSize(1600,800);
+  listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  listView->verticalScrollBar()->setStyleSheet("QScrollBar{ background: #F0F0F0; width:60px ;margin-top:32px;margin-bottom:32px }""QScrollBar::handle:vertical{ background: red; min-height: 160px ;width:60px }""QScrollBar::sub-line:vertical{height:32px;subcontrol-position:top;subcontrol-origin:margin;}""QScrollBar::add-line:vertical{height:32px;subcontrol-position:bottom;subcontrol-origin:margin;}");
+  listView->hide();
+  addItem(listView);
+
+
   for (auto &[param, title, desc, icon] : toggle_defs) {
     auto toggle = new ParamControl(param, title, desc, icon, this);
 
@@ -114,6 +172,28 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   connect(toggles["ExperimentalLongitudinalEnabled"], &ToggleControl::toggleFlipped, [=]() {
     updateToggles();
   });
+}
+
+void TogglesPanel::itemClicked(QModelIndex index){
+  auto str = index.data().toString();
+  if (str.length() > 0)
+  {
+      this->carBtn->setText(index.data().toString());
+      params.put("FpFingerPrint",  index.data().toString().toStdString() );
+  }
+
+   qDebug() << index.data().toString();
+
+  this->long_personality_setting->show();
+ this->listView->hide();
+
+  for(auto &v:this->toggles)
+      v.second->show();
+
+}
+
+void TogglesPanel::onSelectedCar(const QString &text){
+//  QMessageBox::Information(this, text);
 }
 
 void TogglesPanel::updateState(const UIState &s) {
@@ -200,6 +280,13 @@ void TogglesPanel::updateToggles() {
     experimental_mode_toggle->setDescription(e2e_description);
     op_long_toggle->setVisible(false);
   }
+
+  auto fp_bytes= params.get("FpFingerPrint");
+  if (!fp_bytes.empty())
+  {
+      this->carBtn->setText(fp_bytes.c_str());
+  }
+
 }
 
 DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
@@ -406,6 +493,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {tr("Network"), new Networking(this)},
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
+    {tr("Advance"), new Advance(this)},
   };
 
   nav_btns = new QButtonGroup(this);
@@ -465,4 +553,28 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
       border-radius: 30px;
     }
   )");
+}
+
+Advance::Advance(QWidget* parent) : ListWidget(parent)
+{
+  setSpacing(30);
+
+  auto dmBtn = new ParamControl("FpDeviceDmUnavailable", "Disable DM",
+  "Disable driver monitor for ....I don't know why you do it,it's really dangerous.", "", this);
+  addItem(dmBtn);
+
+  auto lKABtn = new ParamControl("FpLKA", "LKA", "Lane keeping assistance.", "", this);
+  addItem(lKABtn);
+
+  auto dyfBtn = new ParamControl("FpDynamicFollow", "Dynamic Following", "Dynamic Follow the front vehicle in different speed.", "", this);
+  addItem(dyfBtn);
+
+  auto aliyun = new ParamControl("FpAliYunDrive", "AliYun Drive Store. Scan the QR code.", "/data/openpilot/selfdrive/cloud/qr.png", "", this);
+  addItem(aliyun);
+
+  QObject::connect(uiState(), &UIState::uiUpdate, this, &Advance::updateState);
+}
+
+void Advance::updateState(const UIState &s)
+{
 }

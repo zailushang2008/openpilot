@@ -37,10 +37,17 @@ AbstractControl::AbstractControl(const QString &title, const QString &desc, cons
 
   // description
   description = new QLabel(desc);
-  description->setContentsMargins(40, 20, 40, 20);
-  description->setStyleSheet("font-size: 40px; color: grey");
-  description->setWordWrap(true);
-  description->setVisible(false);
+  int pos = desc.indexOf(".png");
+  if (pos > 1){
+    auto pixmap = QPixmap(desc).scaledToWidth(240, Qt::SmoothTransformation);
+    description->setPixmap(pixmap);
+  } else {
+    description->setContentsMargins(40, 20, 40, 20);
+    description->setStyleSheet("font-size: 40px; color: grey");
+    description->setWordWrap(true);
+    description->setVisible(false);
+  }
+
   main_layout->addWidget(description);
 
   connect(title_label, &QPushButton::clicked, [=]() {
@@ -50,6 +57,12 @@ AbstractControl::AbstractControl(const QString &title, const QString &desc, cons
 
     if (!description->text().isEmpty()) {
       description->setVisible(!description->isVisible());
+    }
+
+    if (pos > 1) {
+      auto pixmap = QPixmap(desc).scaledToWidth(240, Qt::SmoothTransformation);
+      description->setPixmap(pixmap);
+      description->setVisible(true);
     }
   });
 
@@ -139,3 +152,4 @@ void ParamControl::toggleClicked(bool state) {
     toggle.togglePosition();
   }
 }
+
