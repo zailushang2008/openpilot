@@ -569,6 +569,9 @@ Advance::Advance(QWidget* parent) : ListWidget(parent)
   auto dyfBtn = new ParamControl("FpDynamicFollow", "Dynamic Following", "Dynamic Follow the front vehicle in different speed.", "", this);
   addItem(dyfBtn);
 
+  auto dye2eBtn = new ParamControl("FpDynamicE2E", "Dynamic end to end control", "Switch 'blended' or 'acc' by different situation.", "", this);
+  addItem(dye2eBtn);
+
   auto aliyun = new ParamControl("FpAliYunDrive", "AliYun Drive Store. Scan the QR code.", "/data/openpilot/selfdrive/cloud/qr.png", "", this);
   addItem(aliyun);
 

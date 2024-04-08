@@ -1,9 +1,6 @@
 [submodule "opendbc"]
   path = opendbc
   url = ../../commaai/opendbc.git
-[submodule "cereal"]
-  path = cereal
-  url = ../../commaai/cereal.git
 [submodule "rednose_repo"]
   path = rednose_repo
   url = ../../commaai/rednose.git
@@ -19,3 +16,6 @@
 [submodule "panda"]
   path = panda
   url = https://github.com/iRankoo/panda.git
+[submodule "cereal"]
+	path = cereal
+	url = https://github.com/iRankoo/cereal.git
