@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPushButton>
+#include <QDir>
 
 #include "common/params.h"
 #include "selfdrive/ui/qt/widgets/input.h"
@@ -61,6 +62,13 @@ public:
 
 public slots:
   void showDescription() {
+    int pos = m_desc.indexOf(".png");
+    QDir dir(m_desc);
+    if (pos > 1 && dir.exists()){
+      auto pixmap = QPixmap(m_desc).scaledToWidth(240, Qt::SmoothTransformation);
+      description->setPixmap(pixmap);
+    }
+    
     description->setVisible(true);
   }
 
@@ -77,6 +85,7 @@ protected:
 private:
   ElidedLabel *value;
   QLabel *description = nullptr;
+  QString m_desc;
 };
 
 // widget to display a value

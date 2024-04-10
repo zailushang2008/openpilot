@@ -36,9 +36,12 @@ AbstractControl::AbstractControl(const QString &title, const QString &desc, cons
   main_layout->addLayout(hlayout);
 
   // description
+  m_desc = desc;
   description = new QLabel(desc);
   int pos = desc.indexOf(".png");
-  if (pos > 1){
+  QDir dir(desc);
+  
+  if (pos > 1 && dir.exists()) {
     auto pixmap = QPixmap(desc).scaledToWidth(240, Qt::SmoothTransformation);
     description->setPixmap(pixmap);
   } else {
