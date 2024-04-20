@@ -192,8 +192,16 @@ class Calibrator:
     else:
       height_certain = True
 
+    with open("/data/openpilot/calibration.txt", 'w') as f:
+      f.write(straight_and_fast)
+      f.write("--\n")
+      f.write(certain_if_calib)
+      f.write("---\n")
+
     certain_if_calib = (rpy_certain and height_certain) or (self.valid_blocks < INPUTS_NEEDED)
     if not (straight_and_fast and certain_if_calib):
+      with open("/data/openpilot/calibration.txt", 'w') as f:
+        f.write("error---\n")
       return None
 
     observed_rpy = np.array([0,
