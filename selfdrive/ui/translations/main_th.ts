@@ -698,10 +698,6 @@ This may take up to a minute.</source>
         <source>Software</source>
         <translation>ซอฟต์แวร์</translation>
     </message>
-    <message>
-        <source>Advance</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Setup</name>

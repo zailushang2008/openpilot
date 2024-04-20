@@ -702,10 +702,6 @@ Isso pode levar até um minuto.</translation>
         <source>Software</source>
         <translation>Software</translation>
     </message>
-    <message>
-        <source>Advance</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Setup</name>
