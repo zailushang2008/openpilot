@@ -69,7 +69,7 @@ void HomeWindow::updateState(const UIState &s) {
 
 void HomeWindow::offroadTransition(bool offroad) {
   body->setEnabled(false);
-  sidebar->setVisible(offroad);
+//  sidebar->setVisible(offroad);
 //  if (offroad) {
 //    slayout->setCurrentWidget(home);
 //  } else {
