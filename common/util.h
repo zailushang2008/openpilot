@@ -179,3 +179,5 @@ void update_max_atomic(std::atomic<T>& max, T const& value) {
   T prev = max;
   while (prev < value && !max.compare_exchange_weak(prev, value)) {}
 }
+
+typedef struct rect{int x;int y;int h; int w;}Rect;

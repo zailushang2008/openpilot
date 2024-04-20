@@ -305,14 +305,6 @@
         <source>PAIR</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>openpilot requires the device to be mounted within 4掳 left or right and within 5掳 up or 9掳 down. openpilot is continuously calibrating, resetting is rarely required.</source>
-        <translation type="obsolete">openpilotの本体は、左右4°以内、上5°、下9°以内の角度で取付ける必要があります。継続してキャリブレーションを続けているので、手動でリセットを行う必要はほぼありません。 {4掳?} {5掳?} {9掳?}</translation>
-    </message>
-    <message>
-        <source> Your device is pointed %1掳 %2 and %3掳 %4.</source>
-        <translation type="obsolete"> このデバイスは%2 %1°、%4 %3°の向きに設置されています。 {1掳?} {2 ?} {3掳?} {4.?}</translation>
-    </message>
 </context>
 <context>
     <name>DriverViewWindow</name>
@@ -1169,7 +1161,15 @@ This may take up to a minute.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The driving visualization will transition to the road-facing wide-angle camera at low speeds to better show some turns. The Experimental mode logo will also be shown in the top right corner. </source>
+        <source>The driving visualization will transition to the road-facing wide-angle camera at low speeds to better show some turns. The Experimental mode logo will also be shown in the top right corner.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always-On Driver Monitoring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable driver monitoring even when openpilot is not engaged.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

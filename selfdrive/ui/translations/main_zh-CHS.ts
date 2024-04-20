@@ -305,14 +305,6 @@
         <source>PAIR</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>openpilot requires the device to be mounted within 4掳 left or right and within 5掳 up or 9掳 down. openpilot is continuously calibrating, resetting is rarely required.</source>
-        <translation type="obsolete">openpilot要求设备安装的偏航角在左4°和右4°之间，俯仰角在上5°和下9°之间。一般来说，openpilot会持续更新校准，很少需要重置。 {4掳?} {5掳?} {9掳?}</translation>
-    </message>
-    <message>
-        <source> Your device is pointed %1掳 %2 and %3掳 %4.</source>
-        <translation type="obsolete"> 您的设备校准为%1° %2、%3° %4。 {1掳?} {2 ?} {3掳?} {4.?}</translation>
-    </message>
 </context>
 <context>
     <name>DriverViewWindow</name>
@@ -1171,8 +1163,16 @@ This may take up to a minute.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The driving visualization will transition to the road-facing wide-angle camera at low speeds to better show some turns. The Experimental mode logo will also be shown in the top right corner. </source>
+        <source>The driving visualization will transition to the road-facing wide-angle camera at low speeds to better show some turns. The Experimental mode logo will also be shown in the top right corner.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always-On Driver Monitoring</source>
+        <translation>驾驶员监控常开</translation>
+    </message>
+    <message>
+        <source>Enable driver monitoring even when openpilot is not engaged.</source>
+        <translation>即使在openpilot未激活时也启用驾驶员监控。</translation>
     </message>
 </context>
 <context>

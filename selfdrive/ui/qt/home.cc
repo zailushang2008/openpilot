@@ -1,7 +1,3 @@
-// #ifndef ENABLE_MAPS
-// #define ENABLE_MAPS
-// #endif
-
 #include "selfdrive/ui/qt/home.h"
 
 #include <QHBoxLayout>
