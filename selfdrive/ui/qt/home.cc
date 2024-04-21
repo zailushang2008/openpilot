@@ -69,12 +69,12 @@ void HomeWindow::updateState(const UIState &s) {
 
 void HomeWindow::offroadTransition(bool offroad) {
   body->setEnabled(false);
-//  sidebar->setVisible(offroad);
-//  if (offroad) {
-//    slayout->setCurrentWidget(home);
-//  } else {
+  sidebar->setVisible(offroad);
+  if (offroad) {
+    slayout->setCurrentWidget(home);
+  } else {
     slayout->setCurrentWidget(onroad);
-//  }
+  }
 }
 
 void HomeWindow::showDriverView(bool show) {

@@ -36,7 +36,6 @@ AbstractControl::AbstractControl(const QString &title, const QString &desc, cons
   main_layout->addLayout(hlayout);
 
   // description
-  m_desc = desc;
   description = new QLabel(desc);
   int pos = desc.indexOf(".png");
   
@@ -154,4 +153,3 @@ void ParamControl::toggleClicked(bool state) {
     toggle.togglePosition();
   }
 }
-

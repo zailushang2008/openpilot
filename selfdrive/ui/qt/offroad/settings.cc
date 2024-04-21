@@ -14,14 +14,10 @@
 #include "selfdrive/ui/qt/widgets/prime.h"
 #include "selfdrive/ui/qt/widgets/scrollview.h"
 #include "selfdrive/ui/qt/widgets/ssh_keys.h"
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <QListView>
 #include <QLabel>
 #include <QStandardItemModel>
 #include <QScrollBar>
-
 
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon
@@ -117,7 +113,7 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   });
   addItem(carBtn);
 
-  listView = new QListView(this);
+/*  listView = new QListView(this);
   QStandardItemModel  *ItemModel = new QStandardItemModel(this);
 
   connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(itemClicked(QModelIndex)));
@@ -149,7 +145,7 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   listView->verticalScrollBar()->setStyleSheet("QScrollBar{ background: #F0F0F0; width:60px ;margin-top:32px;margin-bottom:32px }""QScrollBar::handle:vertical{ background: red; min-height: 160px ;width:60px }""QScrollBar::sub-line:vertical{height:32px;subcontrol-position:top;subcontrol-origin:margin;}""QScrollBar::add-line:vertical{height:32px;subcontrol-position:bottom;subcontrol-origin:margin;}");
   listView->hide();
   addItem(listView);
-
+*/
 
   for (auto &[param, title, desc, icon] : toggle_defs) {
     auto toggle = new ParamControl(param, title, desc, icon, this);
@@ -192,10 +188,6 @@ void TogglesPanel::itemClicked(QModelIndex index){
   for(auto &v:this->toggles)
       v.second->show();
 
-}
-
-void TogglesPanel::onSelectedCar(const QString &text){
-//  QMessageBox::Information(this, text);
 }
 
 void TogglesPanel::updateState(const UIState &s) {

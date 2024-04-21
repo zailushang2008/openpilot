@@ -69,11 +69,7 @@ public slots:
   void expandToggleDescription(const QString &param);
 
 private slots:
-  void onSelectedCar(const QString &text);
-
   void itemClicked(QModelIndex index);
-
-
   void updateState(const UIState &s);
 
 private:

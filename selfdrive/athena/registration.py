@@ -18,7 +18,6 @@ UNREGISTERED_DONGLE_ID = "UnregisteredDevice"
 
 
 def is_registered_device() -> bool:
-  return True
   dongle = Params().get("DongleId", encoding='utf-8')
   return dongle not in (None, UNREGISTERED_DONGLE_ID)
 
@@ -97,5 +96,4 @@ def register(show_spinner=False) -> str | None:
 
 
 if __name__ == "__main__":
-  print(1234567890)
-  #print(register())
+  print(register())

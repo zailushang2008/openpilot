@@ -109,19 +109,8 @@ def get_safe_obstacle_distance(v_ego, t_follow):
 def desired_follow_distance(v_ego, v_lead, t_follow=None,personality=log.LongitudinalPersonality.standard):
   if t_follow is None:
     t_follow = get_T_FOLLOW()
-
   t_follow = get_dynamic_follow(v_ego, personality)
-
-  # if t_follow < 1.25:
-  #   v_lead_KPH = Conversions.MS_TO_KPH*v_lead
-  #   v_ego_KPH = Conversions.MS_TO_KPH*v_ego
-  #   if v_lead_KPH <= 0:
-  #     v_lead_KPH = 1
-  #   if v_lead_KPH <= 5 and v_ego_KPH/v_lead_KPH > 3.1:
-  #     t_follow = 1.25
-
   print("time = "+str(t_follow))
-
   return get_safe_obstacle_distance(v_ego, t_follow) - get_stopped_equivalence_factor(v_lead)
 
 
