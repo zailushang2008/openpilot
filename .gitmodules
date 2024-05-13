@@ -1,12 +1,10 @@
 [submodule "panda"]
   path = panda
   url = https://github.com/iRankoo/panda.git
+  branch = master
 [submodule "opendbc"]
   path = opendbc
   url = ../../commaai/opendbc.git
-[submodule "cereal"]
-  path = cereal
-  url = https://github.com/iRankoo/cereal.git
 [submodule "rednose_repo"]
   path = rednose_repo
   url = ../../commaai/rednose.git
@@ -19,3 +17,7 @@
 [submodule "tinygrad"]
   path = tinygrad_repo
   url = https://github.com/geohot/tinygrad.git
+[submodule "cereal"]
+  path = cereal
+  url = https://github.com/iRankoo/cereal.git
+  branch = master
