@@ -89,7 +89,7 @@ class Controls:
     self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
                                    'carOutput', 'driverMonitoringState', 'longitudinalPlan', 'liveLocationKalman',
                                    'managerState', 'liveParameters', 'radarState', 'liveTorqueParameters',
-                                   'testJoystick'] + self.camera_packets + self.sensor_packets,
+                                   'testJoystick', 'longitudinalPlanExt'] + self.camera_packets + self.sensor_packets,
                                   ignore_alive=ignore, ignore_avg_freq=ignore+['radarState', 'testJoystick'], ignore_valid=['testJoystick', ],
                                   frequency=int(1/DT_CTRL))
 
@@ -151,6 +151,8 @@ class Controls:
     self.can_log_mono_time = 0
 
     self.startup_event = get_startup_event(car_recognized, not self.CP.passive, len(self.CP.carFw) > 0)
+
+    self.fp_alka = False
 
     if not sounds_available:
       self.events.add(EventName.soundsUnavailable, static=True)
@@ -369,6 +371,7 @@ class Controls:
     planner_fcw = self.sm['longitudinalPlan'].fcw and self.enabled
     if (planner_fcw or model_fcw) and not (self.CP.notCar and self.joystick_mode):
       self.events.add(EventName.fcw)
+      self.experimental_mode = True
 
     for m in messaging.drain_sock(self.log_sock, wait_for_one=False):
       try:
@@ -555,6 +558,20 @@ class Controls:
     CC.latActive = self.active and not CS.steerFaultTemporary and not CS.steerFaultPermanent and \
                    (not standstill or self.joystick_mode)
     CC.longActive = self.enabled and not self.events.contains(ET.OVERRIDE_LONGITUDINAL) and self.CP.openpilotLongitudinalControl
+
+    # Always LKA
+    #if self.fp_alka and not self.CP.passive and self.initialized and not standstill and CS.cruiseState.available:
+    if self.fp_alka and not self.CP.passive and self.initialized and not standstill and CS.cruiseState.available:
+     if self.sm['liveCalibration'].calStatus != log.LiveCalibrationData.Status.calibrated:
+       pass
+     elif abs(CS.steeringAngleDeg) >= 450:
+       pass
+     elif CS.steerFaultTemporary or CS.steerFaultPermanent:
+       pass
+     elif CS.gearShifter == car.CarState.GearShifter.reverse:
+       pass
+     else:
+       CC.latActive = True
 
     actuators = CC.actuators
     actuators.longControlState = self.LoC.long_control_state
@@ -830,12 +847,26 @@ class Controls:
       return log.LongitudinalPersonality.standard
 
   def params_thread(self, evt):
+    cnt = 0
+
     while not evt.is_set():
-      self.is_metric = self.params.get_bool("IsMetric")
-      self.experimental_mode = self.params.get_bool("ExperimentalMode") and self.CP.openpilotLongitudinalControl
-      self.personality = self.read_personality_param()
-      if self.CP.notCar:
-        self.joystick_mode = self.params.get_bool("JoystickDebugMode")
+      cnt += 1
+
+      #if cnt%10 == 0:
+      if True:
+        self.is_metric = self.params.get_bool("IsMetric")
+        self.dynamic_e2e_controller = self.params.get_bool("FpDynamicE2E")
+        if self.dynamic_e2e_controller:
+          self.experimental_mode = self.sm['longitudinalPlanExt'].dpE2EIsBlended
+        else:
+          self.experimental_mode = self.params.get_bool("ExperimentalMode")
+        # self.experimental_mode = self.params.get_bool("ExperimentalMode") and self.CP.openpilotLongitudinalControl
+        self.personality = self.read_personality_param()
+        if self.CP.notCar:
+          self.joystick_mode = self.params.get_bool("JoystickDebugMode")
+
+        self.fp_alka = self.card.fp_alka
+
       time.sleep(0.1)
 
   def controlsd_thread(self):
