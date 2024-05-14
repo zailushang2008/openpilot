@@ -363,7 +363,7 @@ SConscript(['cereal/SConscript'])
 SConscript([
   'body/board/SConscript',
   'opendbc/can/SConscript',
-  'panda/SConscript',
+#  'panda/SConscript',
 ])
 
 # Build rednose library
