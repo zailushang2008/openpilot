@@ -104,7 +104,6 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   carBtn = new QPushButton( "--------------------Select Car --------------------", this);
  //carBtn->setFixedSize(1500, 80);
 
-//  connect(carBtn, &ButtonControl::showDescriptionEvent, this, &DevicePanel::updateCalibDescription);
   connect(carBtn, &QPushButton::clicked, [&]() {
     for(auto &v:toggles)
       v.second->hide();
@@ -114,36 +113,37 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   addItem(carBtn);
 
   listView = new QListView(this);
-  QStandardItemModel  *ItemModel = new QStandardItemModel(this);
-
   connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(itemClicked(QModelIndex)));
 
-  QStringList strList;
-
   FILE *in= fopen("/data/openpilot/carlist.txt", "r");
-  char buf[1024];
+  char buf[512];
 
+  QStringList strList;
   while (fgets(buf, sizeof(buf), in) != NULL)
   {
-      printf("%s", buf);
-      strList.append(buf);
+	  printf("%s", buf);
+	  strList.append(buf);
   }
   fclose(in);
+
+  QStandardItemModel  *ItemModel = new QStandardItemModel(this);
 
   int nCount = strList.size();
   for(int i = 0; i < nCount; i++)
   {
-      QString string = static_cast<QString>(strList.at(i));
-      QStandardItem *item = new QStandardItem(string);
-      ItemModel->appendRow(item);
+	  QString string = static_cast<QString>(strList.at(i));
+	  QStandardItem *item = new QStandardItem(string);
+	  ItemModel->appendRow(item);
   }
+
   listView->setModel(ItemModel);
   listView->setFixedSize(1600,800);
   listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
   listView->verticalScrollBar()->setStyleSheet("QScrollBar{ background: #F0F0F0; width:60px ;margin-top:32px;margin-bottom:32px }""QScrollBar::handle:vertical{ background: red; min-height: 160px ;width:60px }""QScrollBar::sub-line:vertical{height:32px;subcontrol-position:top;subcontrol-origin:margin;}""QScrollBar::add-line:vertical{height:32px;subcontrol-position:bottom;subcontrol-origin:margin;}");
-  listView->hide();
   addItem(listView);
-//
+  listView->hide();
+
+
 
   for (auto &[param, title, desc, icon] : toggle_defs) {
     auto toggle = new ParamControl(param, title, desc, icon, this);
