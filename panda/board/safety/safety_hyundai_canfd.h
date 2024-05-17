@@ -249,7 +249,7 @@ static bool hyundai_canfd_tx_hook(const CANPacket_t *to_send) {
     bool is_cancel = (button == HYUNDAI_BTN_CANCEL);
     bool is_resume = (button == HYUNDAI_BTN_RESUME);
 
-    bool allowed = (is_cancel && cruise_engaged_prev) || (is_resume && £¨alka_enabled||controls_allowed)£©;
+    bool allowed = (is_cancel && cruise_engaged_prev) || (is_resume && (alka_enabled||controls_allowed));
     if (!allowed) {
       tx = false;
     }
