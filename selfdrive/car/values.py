@@ -17,7 +17,14 @@ Platform = BODY | CHRYSLER | FORD | GM | HONDA | HYUNDAI | MAZDA | MOCK | NISSAN
 BRANDS = get_args(Platform)
 
 PLATFORMS: dict[str, Platform] = {str(platform): platform for brand in BRANDS for platform in brand}
-with open("/data/openpilot/carlist.txt", 'w') as f:
-  for value in PLATFORMS.values():
-    f.write(value)
-    f.write("\n")
+# fp
+try:
+  current_file_path = __file_
+  current_file_dir = os.path.dirname(current_file_path)
+  carlist = os.path.join(current_file_dir, "../../carlist.txt")
+  with open(carlist, 'w') as f:
+    for value in PLATFORMS.values():
+      f.write(value)
+      f.write("\n")
+except Exception as e:
+  print(e)
