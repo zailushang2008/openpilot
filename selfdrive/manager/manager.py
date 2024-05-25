@@ -132,13 +132,13 @@ def manager_thread() -> None:
   #params.put_bool("dp_device_is_clone", dp_device_is_clone)
   fp_device_dm_unavailable = params.get_bool("FpDeviceDmUnavailable")
   if fp_device_dm_unavailable:
-    ignore += ["uploader", "dmonitoringd", "dmonitoringmodeld"]
+    ignore += ["dmonitoringd", "dmonitoringmodeld"]
   elif dp_device_is_clone:
     ignore += ["uploader", "dpdmonitoringd"]
   else:
     ignore += ["dpdmonitoringd"]
 
-  ignore += ["manage_athenad", "uploader"]
+  #ignore += ["manage_athenad", "uploader"]
   if not params.get_bool("FpAliYunDrive"):
     ignore += ["aliyun"]
 
