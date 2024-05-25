@@ -1,3 +1,4 @@
+import os
 from typing import get_args
 from openpilot.selfdrive.car.body.values import CAR as BODY
 from openpilot.selfdrive.car.chrysler.values import CAR as CHRYSLER
@@ -16,12 +17,9 @@ from openpilot.selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
 Platform = BODY | CHRYSLER | FORD | GM | HONDA | HYUNDAI | MAZDA | MOCK | NISSAN | SUBARU | TESLA | TOYOTA | VOLKSWAGEN
 BRANDS = get_args(Platform)
 
-PLATFORMS: dict[str, Platform] = {str(platform): platform for brand in BRANDS for platform in brand}
-# fp
 try:
-  current_file_path = __file_
-  current_file_dir = os.path.dirname(current_file_path)
-  carlist = os.path.join(current_file_dir, "../../carlist.txt")
+  current_file_path = os.path.dirname(os.path.realpath('__file__'))
+  carlist = os.path.join(current_file_path, "carlist.txt")
   with open(carlist, 'w') as f:
     for value in PLATFORMS.values():
       f.write(value)
