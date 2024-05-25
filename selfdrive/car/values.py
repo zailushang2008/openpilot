@@ -16,6 +16,7 @@ from openpilot.selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
 
 Platform = BODY | CHRYSLER | FORD | GM | HONDA | HYUNDAI | MAZDA | MOCK | NISSAN | SUBARU | TESLA | TOYOTA | VOLKSWAGEN
 BRANDS = get_args(Platform)
+PLATFORMS: dict[str, Platform] = {str(platform): platform for brand in BRANDS for platform in brand}
 
 try:
   current_file_path = os.path.dirname(os.path.realpath('__file__'))
