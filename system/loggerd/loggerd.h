@@ -16,7 +16,7 @@
 constexpr int MAIN_FPS = 20;
 const int MAIN_BITRATE = 1e7;
 const int LIVESTREAM_BITRATE = 1e6;
-const int QCAM_BITRATE = 256000;
+const int QCAM_BITRATE = 656000;
 
 #define NO_CAMERA_PATIENCE 500  // fall back to time-based rotation if all cameras are dead
 
@@ -103,8 +103,8 @@ const EncoderInfo qcam_encoder_info = {
   .filename = "qcamera.ts",
   .bitrate = QCAM_BITRATE,
   .encode_type = cereal::EncodeIndex::Type::QCAMERA_H264,
-  .frame_width = 526,
-  .frame_height = 330,
+  .frame_width = 1052,
+  .frame_height = 660,
   INIT_ENCODE_FUNCTIONS(QRoadEncode),
 };
 
