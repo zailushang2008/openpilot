@@ -87,7 +87,7 @@ procs = [
   PythonProcess("webjoystick", "tools.bodyteleop.web", notcar),
   #
   PythonProcess("dpdmonitoringd", "selfdrive.fp.dpdmonitoringd", only_onroad, enabled=not PC),
-  NativeProcess("aliyun", "selfdrive/cloud", ["./aliyun"], always_run),
+ # NativeProcess("aliyun", "selfdrive/cloud", ["./aliyun"], always_run),
   #PythonProcess("httpsvr", "selfdrive.navd.httpsvr", always_run),
 ]
 
