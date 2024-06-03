@@ -124,6 +124,7 @@ class DynamicEndtoEndController:
     self._mpc_fcw_crash_cnt = 0
 
     self._set_mode_timeout = 0
+    self._leadOne_distance = 0.0
     pass
 
   def _update(self, car_state, lead_one, md, controls_state):
@@ -179,11 +180,14 @@ class DynamicEndtoEndController:
       self._dangerous_ttc_gmac.reset_data()
       self._has_dangerous_ttc = False
 
-    if self._has_lead and car_state.vEgo >= 0.01:
-      self._dangerous_ttc_gmac.add_data(lead_one.dRel/car_state.vEgo)
+    if self._has_lead:
+      self._leadOne_distance = lead_one.dRel
+      if car_state.vEgo >= 0.01:
+        self._dangerous_ttc_gmac.add_data(lead_one.dRel/car_state.vEgo)
+    else:
+      self._leadOne_distance = 100.0
 
     self._has_dangerous_ttc = self._dangerous_ttc_gmac.get_moving_average() is not None and self._dangerous_ttc_gmac.get_moving_average() <= DANGEROUS_TTC
-
 
     # keep prev values
     self._has_standstill_prev = self._has_standstill
@@ -191,6 +195,10 @@ class DynamicEndtoEndController:
     self._frame += 1
 
   def _radarless_mode(self):
+    if self._leadOne_distance <= 30.0:
+      self._set_mode('blended')
+      return
+
     # when mpc fcw crash prob is high
     # use blended to slow down quickly
     if self._has_mpc_fcw:
@@ -241,6 +249,10 @@ class DynamicEndtoEndController:
     self._set_mode('acc')
 
   def _radar_mode(self):
+    if self._leadOne_distance <= 30.0:
+      self._set_mode('blended')
+      return
+
     # when mpc fcw crash prob is high
     # use blended to slow down quickly
     if self._has_mpc_fcw:
