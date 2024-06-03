@@ -212,7 +212,6 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"FpFingerPrint", PERSISTENT},
     {"FpLKA", PERSISTENT},
     {"FpDynamicFollow", PERSISTENT},
-    {"FpAliYunDrive", PERSISTENT},
     {"FpDynamicE2E", PERSISTENT},
 };
 

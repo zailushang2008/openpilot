@@ -555,9 +555,6 @@ Advance::Advance(QWidget* parent) : ListWidget(parent)
   auto dye2eBtn = new ParamControl("FpDynamicE2E", "Dynamic end to end control", "Switch 'blended' or 'acc' by different situation.", "", this);
   addItem(dye2eBtn);
 
-  auto aliyun = new ParamControl("FpAliYunDrive", "AliYun Drive Store. Scan the QR code.", "/data/openpilot/selfdrive/cloud/qr.png", "", this);
-  addItem(aliyun);
-
   QObject::connect(uiState(), &UIState::uiUpdate, this, &Advance::updateState);
 }
 
