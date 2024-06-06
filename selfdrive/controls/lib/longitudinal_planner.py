@@ -124,7 +124,7 @@ class LongitudinalPlanner:
     # Compute model v_ego error
     self.v_model_error = get_speed_error(sm['modelV2'], v_ego)
 
-    if force_slow_decel:
+    if force_slow_decel or self.fcw:
       v_cruise = 0.0
     # clip limits, cannot init MPC outside of bounds
     accel_limits_turns[0] = min(accel_limits_turns[0], self.a_desired + 0.05)
