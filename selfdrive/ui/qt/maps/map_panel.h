@@ -3,7 +3,7 @@
 #include <QFrame>
 #include <QMapLibre/Settings>
 #include <QStackedLayout>
-class QWebEngineView;
+//class QWebEngineView;
 
 class MapPanel : public QFrame {
   Q_OBJECT
@@ -21,5 +21,5 @@ public slots:
 
 private:
   QStackedLayout *content_stack;
-  QWebEngineView *m_pHtmlView;
+  //QWebEngineView *m_pHtmlView;
 };
