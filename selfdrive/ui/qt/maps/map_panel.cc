@@ -9,29 +9,38 @@
 #include "selfdrive/ui/ui.h"
 
 MapPanel::MapPanel(const QMapLibre::Settings &mapboxSettings, QWidget *parent) : QFrame(parent) {
-  content_stack = new QStackedLayout(this);
-  content_stack->setContentsMargins(0, 0, 0, 0);
+  // content_stack = new QStackedLayout(this);
+  // content_stack->setContentsMargins(0, 0, 0, 0);
 
-  auto map = new MapWindow(mapboxSettings);
-  QObject::connect(uiState(), &UIState::offroadTransition, map, &MapWindow::offroadTransition);
-  QObject::connect(device(), &Device::interactiveTimeout, this, [=]() {
-    content_stack->setCurrentIndex(0);
-  });
-  QObject::connect(map, &MapWindow::requestVisible, this, [=](bool visible) {
-    // when we show the map for a new route, signal HomeWindow to hide the sidebar
-    if (visible) { emit mapPanelRequested(); }
-    setVisible(visible);
-  });
-  QObject::connect(map, &MapWindow::requestSettings, this, [=](bool settings) {
-    content_stack->setCurrentIndex(settings ? 1 : 0);
-  });
-  content_stack->addWidget(map);
+  // auto map = new MapWindow(mapboxSettings);
+  // QObject::connect(uiState(), &UIState::offroadTransition, map, &MapWindow::offroadTransition);
+  // QObject::connect(device(), &Device::interactiveTimeout, this, [=]() {
+  //   content_stack->setCurrentIndex(0);
+  // });
+  // QObject::connect(map, &MapWindow::requestVisible, this, [=](bool visible) {
+  //   // when we show the map for a new route, signal HomeWindow to hide the sidebar
+  //   if (visible) { emit mapPanelRequested(); }
+  //   setVisible(visible);
+  // });
+  // QObject::connect(map, &MapWindow::requestSettings, this, [=](bool settings) {
+  //   content_stack->setCurrentIndex(settings ? 1 : 0);
+  // });
+  // content_stack->addWidget(map);
 
-  auto settings = new MapSettings(true, parent);
-  QObject::connect(settings, &MapSettings::closeSettings, this, [=]() {
-    content_stack->setCurrentIndex(0);
-  });
-  content_stack->addWidget(settings);
+  // auto settings = new MapSettings(true, parent);
+  // QObject::connect(settings, &MapSettings::closeSettings, this, [=]() {
+  //   content_stack->setCurrentIndex(0);
+  // });
+  // content_stack->addWidget(settings);
+
+  m_pHtmlView = new QWebEngineView(this);
+  setCentralWidget(m_pHtmlView);
+  m_pHtmlView->page()->load("file:///data/openpilot/selfdrive/navd/nav.html")
+}
+
+MapPanel::~MapPanel()
+{
+  delete m_pHtmlView;
 }
 
 void MapPanel::toggleMapSettings() {
