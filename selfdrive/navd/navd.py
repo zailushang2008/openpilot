@@ -180,6 +180,7 @@ class RouteEngine:
               if ('unknown' not in maxspeed) and ('none' not in maxspeed):
                 coord.annotations['maxspeed'] = maxspeed_to_ms(maxspeed)
 
+            cloudlog.warning(f"coords {c} -> {coords}")
             coords.append(coord)
             maxspeed_idx += 1
 
