@@ -99,7 +99,10 @@ class RouteEngine:
 
       dongle_id = Params().get("DongleId", encoding='utf-8')
       url = API_HOST+ "/gps/"+dongle_id+"/"+str(self.last_position.longitude)+","+str(self.last_position.latitude)
-      requests.put(url,timeout=2)
+      try:
+        requests.put(url,timeout=2)
+      except Exception:
+        cloudlog.exception("Upload error {url}")
     ###Upload GPS###
 
 
