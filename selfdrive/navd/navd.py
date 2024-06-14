@@ -97,7 +97,7 @@ class RouteEngine:
       offLat = self.last_upload_gps.latitude - self.last_position.latitude
 
       time_interval = 3
-      if (offLng < 0.0000001 or offLng < -0.0000001) and (offLat < 0.0000001 or offLat < -0.0000001):
+      if (offLng < 0.0000001 or offLng > -0.0000001) and (offLat < 0.0000001 or offLat > -0.0000001):
         time_interval = 60
 
       if timestamp - self.last_upload_time > time_interval:
@@ -194,6 +194,7 @@ class RouteEngine:
         self.route = r['routes'][0]['legs'][0]['steps']
         self.route_geometry = []
 
+        cloudlog.warning(f"route len steps {len(self.route)}")
         maxspeed_idx = 0
         maxspeeds = r['routes'][0]['legs'][0]['annotation']['maxspeed']
 
@@ -210,7 +211,7 @@ class RouteEngine:
               if ('unknown' not in maxspeed) and ('none' not in maxspeed):
                 coord.annotations['maxspeed'] = maxspeed_to_ms(maxspeed)
 
-            cloudlog.warning(f"coords {c} -> {coords}")
+#            cloudlog.warning(f"coords {c} -> {coords}")
             coords.append(coord)
             maxspeed_idx += 1
 
