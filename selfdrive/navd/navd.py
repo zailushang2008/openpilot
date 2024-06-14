@@ -50,8 +50,8 @@ class RouteEngine:
 
     self.reroute_counter = 0
 
-    self.last_upload_time = 0
-    self.last_upload_gps = self.last_position
+    self.last_upload_time = 0   ###Upload GPS### last upload time
+    self.last_upload_gps = self.last_position   ###Upload GPS### last upload gps
 
     self.api = None
     self.mapbox_token = None
