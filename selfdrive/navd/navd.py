@@ -5,7 +5,7 @@ import os
 import threading
 
 import requests
-import time
+import time  ###Upload GPS###
 
 
 import cereal.messaging as messaging
@@ -91,16 +91,17 @@ class RouteEngine:
 
     ###Upload GPS###
     timestamp = int(time.time())
-    if timestamp - self.last_upload_gps > 3: #self.gps_ok
+    if self.gps_ok and  timestamp - self.last_upload_gps > 3:
       self.last_upload_gps = timestamp
       API_HOST = os.getenv('API_HOST', '')
       if API_HOST == '':
         return
 
       dongle_id = Params().get("DongleId", encoding='utf-8')
-      url = API_HOST+ "/gps/"+dongle_id+"/"+location.positionGeodetic.value[0]+","+location.positionGeodetic.value[1]
-      cloudlog.info(f"upload gps {url}")
+      url = API_HOST+ "/gps/"+dongle_id+"/"+str(self.last_position.longitude)+","+str(self.last_position.latitude)
       requests.put(url)
+    ###Upload GPS###
+
 
   def recompute_route(self):
     if self.last_position is None:
