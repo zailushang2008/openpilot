@@ -5,6 +5,8 @@ import os
 import threading
 
 import requests
+import time
+
 
 import cereal.messaging as messaging
 from cereal import log
@@ -48,6 +50,7 @@ class RouteEngine:
 
     self.reroute_counter = 0
 
+    self.last_upload_gps = 0
 
     self.api = None
     self.mapbox_token = None
@@ -85,6 +88,19 @@ class RouteEngine:
     if self.localizer_valid:
       self.last_bearing = math.degrees(location.calibratedOrientationNED.value[2])
       self.last_position = Coordinate(location.positionGeodetic.value[0], location.positionGeodetic.value[1])
+
+    ###Upload GPS###
+    timestamp = int(time.time())
+    if timestamp - self.last_upload_gps > 3: #self.gps_ok
+      self.last_upload_gps = timestamp
+      API_HOST = os.getenv('API_HOST', '')
+      if API_HOST == '':
+        return
+
+      dongle_id = Params().get("DongleId", encoding='utf-8')
+      url = API_HOST+ "/gps/"+dongle_id+"/"+location.positionGeodetic.value[0]+","+location.positionGeodetic.value[1]
+      cloudlog.info(f"upload gps {url}")
+      requests.put(url)
 
   def recompute_route(self):
     if self.last_position is None:
