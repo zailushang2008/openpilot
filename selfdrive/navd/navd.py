@@ -50,7 +50,8 @@ class RouteEngine:
 
     self.reroute_counter = 0
 
-    self.last_upload_gps = 0
+    self.last_upload_time = 0
+    self.last_upload_gps = self.last_position
 
     self.api = None
     self.mapbox_token = None
@@ -91,18 +92,27 @@ class RouteEngine:
 
     ###Upload GPS###
     timestamp = int(time.time())
-    if self.gps_ok and  timestamp - self.last_upload_gps > 3:
-      self.last_upload_gps = timestamp
-      API_HOST = os.getenv('API_HOST', '')
-      if API_HOST == '':
-        return
+    if self.gps_ok:
+      offLng = self.last_upload_gps.longitude - self.last_position.longitude
+      offLat = self.last_upload_gps.latitude - self.last_position.latitude
 
-      dongle_id = Params().get("DongleId", encoding='utf-8')
-      url = API_HOST+ "/gps/"+dongle_id+"/"+str(self.last_position.longitude)+","+str(self.last_position.latitude)
-      try:
-        requests.put(url,timeout=2)
-      except Exception:
-        cloudlog.exception("Upload error {url}")
+      time_interval = 3
+      if (offLng < 0.0000001 or offLng < -0.0000001) and (offLat < 0.0000001 or offLat < -0.0000001):
+        time_interval = 60
+
+      if timestamp - self.last_upload_time > time_interval:
+        self.last_upload_time = timestamp
+        API_HOST = os.getenv('API_HOST', '')
+        if API_HOST == '':
+          return
+
+        dongle_id = Params().get("DongleId", encoding='utf-8')
+        url = API_HOST+ "/gps/"+dongle_id+"/"+str(self.last_position.longitude)+","+str(self.last_position.latitude)
+        try:
+          requests.put(url,timeout=2)
+          self.last_upload_gps = self.last_position
+        except Exception:
+          cloudlog.exception("Upload error {url}")
     ###Upload GPS###
 
 
@@ -387,3 +397,4 @@ def main():
 
 if __name__ == "__main__":
   main()
+
