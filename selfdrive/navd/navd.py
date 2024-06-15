@@ -377,9 +377,12 @@ class RouteEngine:
     v = interp(y_val,y,x)
     v_point = Coordinate(y_val,v)
     distance = v_point.distance_to(self.last_position)
-    cloudlog.warning(f"should_recompute distanc={distance} v_point={v_point} last_position={self.last_position}")
 
-    return distance < REROUTE_DISTANCE*4
+    if distance < REROUTE_DISTANCE*4:
+      return False
+
+    cloudlog.warning(f"should_recompute distanc={distance} v_point={v_point} last_position={self.last_position}")
+    return True
 
     # Compute closest distance to all line segments in the current path
     min_d = REROUTE_DISTANCE + 1
