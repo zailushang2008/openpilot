@@ -7,6 +7,7 @@ import threading
 import requests
 import time  ###Upload GPS###
 
+from openpilot.common.numpy_fast import interp
 
 import cereal.messaging as messaging
 from cereal import log
@@ -96,8 +97,8 @@ class RouteEngine:
       offLng = self.last_upload_gps.longitude - self.last_position.longitude
       offLat = self.last_upload_gps.latitude - self.last_position.latitude
 
-      time_interval = 3
-      if (offLng < 0.0000001 or offLng > -0.0000001) and (offLat < 0.0000001 or offLat > -0.0000001):
+      time_interval = 10
+      if (offLng < 0.0000001 and offLng > -0.0000001) and (offLat < 0.0000001 and offLat > -0.0000001):
         time_interval = 60
 
       if timestamp - self.last_upload_time > time_interval:
@@ -364,6 +365,21 @@ class RouteEngine:
     # Don't recompute in last segment, assume destination is reached
     if self.step_idx == len(self.route) - 1:
       return False
+
+    x = []
+    y = []
+    path = self.route_geometry[self.step_idx]
+    for i in range(len(path) - 1):
+      x.append(path[i].longitude)
+      y.append(path[i].latitude)
+
+    y_val = self.last_position.latitude
+    v = interp(y_val,y,x)
+    v_point = Coordinate(y_val,v)
+    distance = v_point.distance_to(self.last_position)
+    cloudlog.warning(f"should_recompute distanc={distance} v_point={v_point} last_position={self.last_position}")
+
+    return distance < REROUTE_DISTANCE*4
 
     # Compute closest distance to all line segments in the current path
     min_d = REROUTE_DISTANCE + 1
