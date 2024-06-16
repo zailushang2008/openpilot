@@ -124,6 +124,12 @@ class LongitudinalPlanner:
     # Compute model v_ego error
     self.v_model_error = get_speed_error(sm['modelV2'], v_ego)
 
+    speedLimit = sm['navInstruction'].speedLimit
+    if speedLimit > 0 and speedLimit <= 130:
+      if v_ego > speedLimit* CV.KPH_TO_MS:
+        v_cruise = 0.0
+        cloudlog.info("speedLimit triggered")
+
     if force_slow_decel or self.fcw:
       v_cruise = 0.0
     # clip limits, cannot init MPC outside of bounds
