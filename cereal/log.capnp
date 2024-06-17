@@ -29,6 +29,7 @@ struct InitData {
   osVersion @18 :Text;
 
   dongleId @2 :Text;
+  bootlogId @22 :Text;
 
   deviceType @3 :DeviceType;
   version @4 :Text;
@@ -198,6 +199,13 @@ struct Thumbnail {
   frameId @0 :UInt32;
   timestampEof @1 :UInt64;
   thumbnail @2 :Data;
+  encoding @3 :Encoding;
+
+  enum Encoding {
+    unknown @0;
+    jpeg @1;
+    keyframe @2;
+  }
 }
 
 struct GPSNMEAData {
@@ -690,7 +698,6 @@ struct ControlsState @0x97ff69c53601abf1 {
   personality @66 :LongitudinalPersonality;
 
   longControlState @30 :Car.CarControl.Actuators.LongControlState;
-  vPid @2 :Float32;
   vTargetLead @3 :Float32;
   vCruise @22 :Float32;  # actual set speed
   vCruiseCluster @63 :Float32;  # set speed to display in the UI
@@ -713,7 +720,6 @@ struct ControlsState @0x97ff69c53601abf1 {
   engageable @41 :Bool;  # can OP be engaged?
 
   cumLagMs @15 :Float32;
-  canErrorCounter @57 :UInt32;
 
   lateralControlState :union {
     indiState @52 :LateralINDIState;
@@ -858,6 +864,8 @@ struct ControlsState @0x97ff69c53601abf1 {
   steeringAngleDesiredDegDEPRECATED @29 :Float32;
   canMonoTimesDEPRECATED @21 :List(UInt64);
   desiredCurvatureRateDEPRECATED @62 :Float32;
+  canErrorCounterDEPRECATED @57 :UInt32;
+  vPidDEPRECATED @2 :Float32;
 }
 
 # All SI units and in device frame
@@ -905,8 +913,8 @@ struct ModelDataV2 {
   # Model perceived motion
   temporalPose @21 :Pose;
 
-  navEnabled @22 :Bool;
-  locationMonoTime @24 :UInt64;
+  navEnabledDEPRECATED @22 :Bool;
+  locationMonoTimeDEPRECATED @24 :UInt64;
 
   # e2e lateral planner
   lateralPlannerSolutionDEPRECATED @25: LateralPlannerSolution;
@@ -1052,6 +1060,11 @@ struct LongitudinalPlan @0xe00b5b3eba12876c {
   accels @32 :List(Float32);
   speeds @33 :List(Float32);
   jerks @34 :List(Float32);
+  aTarget @18 :Float32;
+  shouldStop @37: Bool;
+  allowThrottle @38: Bool;
+  allowBrake @39: Bool;
+
 
   solverExecutionTime @35 :Float32;
 
@@ -1068,7 +1081,6 @@ struct LongitudinalPlan @0xe00b5b3eba12876c {
   aCruiseDEPRECATED @17 :Float32;
   vTargetDEPRECATED @3 :Float32;
   vTargetFutureDEPRECATED @14 :Float32;
-  aTargetDEPRECATED @18 :Float32;
   vStartDEPRECATED @26 :Float32;
   aStartDEPRECATED @27 :Float32;
   vMaxDEPRECATED @20 :Float32;
@@ -1130,29 +1142,6 @@ struct LateralPlan @0xe1e9318e2ae8b51e {
   struct SolverState {
     x @0 :List(List(Float32));
     u @1 :List(Float32);
-  }
-
-  enum Desire {
-    none @0;
-    turnLeft @1;
-    turnRight @2;
-    laneChangeLeft @3;
-    laneChangeRight @4;
-    keepLeft @5;
-    keepRight @6;
-  }
-
-  enum LaneChangeState {
-    off @0;
-    preLaneChange @1;
-    laneChangeStarting @2;
-    laneChangeFinishing @3;
-  }
-
-  enum LaneChangeDirection {
-    none @0;
-    left @1;
-    right @2;
   }
 
   # deprecated
@@ -2259,7 +2248,6 @@ struct Event {
     carControl @23 :Car.CarControl;
     carOutput @127 :Car.CarOutput;
     longitudinalPlan @24 :LongitudinalPlan;
-    uiPlan @106 :UiPlan;
     ubloxGnss @34 :UbloxGnss;
     ubloxRaw @39 :Data;
     qcomGnss @31 :QcomGnss;
@@ -2276,7 +2264,6 @@ struct Event {
     liveLocationKalman @72 :LiveLocationKalman;
     modelV2 @75 :ModelDataV2;
     driverStateV2 @92 :DriverStateV2;
-    navModel @104 :NavModelData;
 
     # camera stuff, each camera state has a matching encode idx
     roadCameraState @2 :FrameData;
@@ -2381,5 +2368,7 @@ struct Event {
     driverStateDEPRECATED @59 :DriverStateDEPRECATED;
     sensorEventsDEPRECATED @11 :List(SensorEventData);
     lateralPlanDEPRECATED @64 :LateralPlan;
+    navModelDEPRECATED @104 :NavModelData;
+    uiPlanDEPRECATED @106 :UiPlan;
   }
 }

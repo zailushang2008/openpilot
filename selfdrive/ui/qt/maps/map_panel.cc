@@ -32,15 +32,6 @@ MapPanel::MapPanel(const QMapLibre::Settings &mapboxSettings, QWidget *parent) :
     content_stack->setCurrentIndex(0);
   });
   content_stack->addWidget(settings);
-
- // m_pHtmlView = new QWebEngineView(this);
- // setCentralWidget(m_pHtmlView);
- // m_pHtmlView->page()->load("file:///data/openpilot/selfdrive/navd/nav.html")
-}
-
-MapPanel::~MapPanel()
-{
-  //delete m_pHtmlView;
 }
 
 void MapPanel::toggleMapSettings() {
