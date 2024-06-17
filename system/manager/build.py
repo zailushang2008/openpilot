@@ -3,6 +3,7 @@ import os
 import subprocess
 from pathlib import Path
 
+
 # NOTE: Do NOT import anything here that needs be built (e.g. params)
 from openpilot.common.basedir import BASEDIR
 from openpilot.common.spinner import Spinner
