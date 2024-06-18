@@ -69,6 +69,7 @@ def get_accel_from_plan(CP, long_plan):
 class LongitudinalPlanner:
   def __init__(self, CP, init_v=0.0, init_a=0.0, dt=DT_MDL):
     self.dynamic_endtoend_controller = DynamicEndtoEndController()
+    self.speed_limit_by_map = False
 
     self.CP = CP
     self.mpc = LongitudinalMpc(dt=dt)
@@ -104,8 +105,9 @@ class LongitudinalPlanner:
     return x, v, a, j
 
   def update(self, sm):
-    if self.param_read_cnt % 100 == 0:
+    if self.param_read_cnt % 50 == 0:
       self.dynamic_endtoend_controller.set_enabled(self.params.get_bool("FpDynamicE2E"))
+      self.speed_limit_by_map = self.params.get_bool("FpSpeedLimitMap")
     self.param_read_cnt += 1
 
     if self.dynamic_endtoend_controller.is_enabled():
@@ -145,7 +147,7 @@ class LongitudinalPlanner:
     self.v_model_error = get_speed_error(sm['modelV2'], v_ego)
 
     speedLimit = sm['navInstruction'].speedLimit
-    if speedLimit > 0 and speedLimit <= 130:
+    if self.speed_limit_by_map and speedLimit > 0 and speedLimit <= 130:
       if v_ego > speedLimit* CV.KPH_TO_MS:
         v_cruise = 0.0
         cloudlog.info("speedLimit triggered")

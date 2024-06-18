@@ -555,6 +555,9 @@ Advance::Advance(QWidget* parent) : ListWidget(parent)
   auto dye2eBtn = new ParamControl("FpDynamicE2E", "Dynamic end to end control", "Switch 'blended' or 'acc' by different situation.", "", this);
   addItem(dye2eBtn);
 
+  auto speedLimitMapBtn = new ParamControl("FpSpeedLimitMap", "Speed limit according to map data", "Speed limit according to map data.", "", this);
+  addItem(speedLimitMapBtn);
+
   QObject::connect(uiState(), &UIState::uiUpdate, this, &Advance::updateState);
 }
 
