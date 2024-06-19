@@ -10,6 +10,7 @@ export ATHENA_HOST='ws://laolang.duckdns.org:7899'
 export API_HOST='http://laolang.duckdns.org:7898'
 export MAPBOX_TOKEN='pk.eyJ1Ijoiam5ld2IiLCJhIjoiY2xxNW8zZXprMGw1ZzJwbzZneHd2NHljbSJ9.gV7VPRfbXFetD-1OVF0XZg'
 
+
 if [ -z "$AGNOS_VERSION" ]; then
   export AGNOS_VERSION="10.1"
 fi
