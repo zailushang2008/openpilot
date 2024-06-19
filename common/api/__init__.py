@@ -1,7 +1,7 @@
 import jwt
 import os
 import requests
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 from openpilot.system.hardware.hw import Paths
 from openpilot.system.version import get_version
 
@@ -23,7 +23,7 @@ class Api:
     return api_get(endpoint, method=method, timeout=timeout, access_token=access_token, **params)
 
   def get_token(self, expiry_hours=1):
-    now = datetime.now(UTC).replace(tzinfo=None)
+    now = datetime.utcnow()
     payload = {
       'identity': self.dongle_id,
       'nbf': now,
