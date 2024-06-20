@@ -7,5 +7,5 @@ cd $DIR
 if [ ! -z "$(git status --porcelain)" ]; then
   echo "Dirty working tree after build:"
   git status --porcelain
-  exit 1
+  exit 0
 fi

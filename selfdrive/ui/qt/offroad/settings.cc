@@ -105,8 +105,7 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
  //carBtn->setFixedSize(1500, 80);
 
   connect(carBtn, &QPushButton::clicked, [&]() {
-    for (auto &v:toggles)
-    {
+    for (auto &v:toggles) {
         v.second->hide();
     }
 
