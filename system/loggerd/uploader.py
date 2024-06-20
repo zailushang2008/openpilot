@@ -83,7 +83,8 @@ class Uploader:
     self.last_filename = ""
 
     self.immediate_folders = ["crash/", "boot/"]
-    self.immediate_priority = {"qlog": 0, "qlog.bz2": 0, "qcamera.ts": 1}
+    # self.immediate_priority = {"qlog": 0, "qlog.bz2": 0, "qcamera.ts": 1}
+    self.immediate_priority = {"qlog": 0, "qcamera.ts": 1}
 
   def list_upload_files(self, metered: bool) -> Iterator[tuple[str, str, str]]:
     r = self.params.get("AthenadRecentlyViewedRoutes", encoding="utf8")
