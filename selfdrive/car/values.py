@@ -18,12 +18,12 @@ Platform = BODY | CHRYSLER | FORD | GM | HONDA | HYUNDAI | MAZDA | MOCK | NISSAN
 BRANDS = get_args(Platform)
 PLATFORMS: dict[str, Platform] = {str(platform): platform for brand in BRANDS for platform in brand}
 
-# try:
-#   current_file_path = os.path.dirname(os.path.realpath('__file__'))
-#   carlist = os.path.join(current_file_path, "carlist.txt")
-#   with open(carlist, 'w') as f:
-#     for value in PLATFORMS.values():
-#       f.write(value)
-#       f.write("\n")
-# except Exception as e:
-#   print(e)
+try:
+  current_file_path = os.path.dirname(os.path.realpath('__file__'))
+  carlist = os.path.join(current_file_path, "carlist.txt")
+  with open(carlist, 'w') as f:
+    for value in PLATFORMS.values():
+      f.write(value)
+      f.write("\n")
+except Exception as e:
+  print(e)

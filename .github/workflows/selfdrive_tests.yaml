@@ -38,7 +38,7 @@ jobs:
     - run: git lfs pull
     - name: Build devel
       timeout-minutes: 1
-      run: TARGET_DIR=$STRIPPED_DIR release/build_devel.sh
+      run: TARGET_DIR=$STRIPPED_DIR release/build_release.sh
     - uses: ./.github/workflows/setup-pre-commit
     - uses: ./.github/workflows/setup-with-retry
     - name: Check submodules
