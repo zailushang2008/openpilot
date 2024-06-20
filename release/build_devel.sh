@@ -44,6 +44,7 @@ git clean -xdff
 echo "[-] copying files T=$SECONDS"
 cd $SOURCE_DIR
 cp $SOURCE_DIR/release/release_files.py $TARGET_DIR
+mkdir -p $TARGET_DIR/release
 cp $SOURCE_DIR/release/release_files.py $TARGET_DIR/release/release_files.py
 #cp -pR --parents $(./release/release_files.py) $TARGET_DIR
 
