@@ -10,7 +10,6 @@ from openpilot.common.swaglog import cloudlog
 from openpilot.selfdrive.modeld.constants import index_function
 from openpilot.selfdrive.car.interfaces import ACCEL_MIN
 from openpilot.selfdrive.controls.radard import _LEAD_ACCEL_TAU
-from openpilot.common.params import Params
 
 if __name__ == '__main__':  # generating code
   from openpilot.third_party.acados.acados_template import AcadosModel, AcadosOcp, AcadosOcpSolver
@@ -45,6 +44,7 @@ LEAD_DANGER_FACTOR = 0.75
 LIMIT_COST = 1e6
 ACADOS_SOLVER_TYPE = 'SQP_RTI'
 
+_dynamic_follow = False
 
 # Fewer timestamps don't hurt performance and lead to
 # much better convergence of the MPC with low iterations
@@ -57,8 +57,6 @@ FCW_IDXS = T_IDXS < 5.0
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
 COMFORT_BRAKE = 2.5
 STOP_DISTANCE = 5.0
-
-_dynamic_follow = Params().get_bool("FpDynamicFollow")
 
 def get_jerk_factor(personality=log.LongitudinalPersonality.standard):
   if personality==log.LongitudinalPersonality.relaxed:
@@ -84,6 +82,7 @@ def get_T_FOLLOW(personality=log.LongitudinalPersonality.standard):
 #From dp
 def get_dynamic_follow(v_ego, personality=log.LongitudinalPersonality.standard):
   if not _dynamic_follow:
+    cloudlog.warning(f"get_dynamic_follow : {_dynamic_follow}")
     return get_T_FOLLOW(personality)
 
   if personality==log.LongitudinalPersonality.relaxed:
@@ -273,6 +272,7 @@ class LongitudinalMpc:
     self.status = False
     self.crash_cnt = 0.0
     self.solution_status = 0
+
     # timers
     self.solve_time = 0.0
     self.time_qp_solution = 0.0
@@ -296,6 +296,9 @@ class LongitudinalMpc:
     Zl = np.array(constraint_cost_weights)
     for i in range(N):
       self.solver.cost_set(i, 'Zl', Zl)
+
+  def set_params(self, dynamic_follow=False):
+    _dynamic_follow = dynamic_follow
 
   def set_weights(self, prev_accel_constraint=True, personality=log.LongitudinalPersonality.standard):
     jerk_factor = get_jerk_factor(personality)

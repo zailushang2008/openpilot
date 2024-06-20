@@ -108,6 +108,7 @@ class LongitudinalPlanner:
     if self.param_read_cnt % 50 == 0:
       self.dynamic_endtoend_controller.set_enabled(self.params.get_bool("FpDynamicE2E"))
       self.speed_limit_by_map = self.params.get_bool("FpSpeedLimitMap")
+      self.mpc.set_params(self.params.get_bool("FpDynamicFollow"))
     self.param_read_cnt += 1
 
     if self.dynamic_endtoend_controller.is_enabled():
