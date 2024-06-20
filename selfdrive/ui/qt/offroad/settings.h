@@ -111,10 +111,5 @@ public:
   explicit Advance(QWidget* parent = nullptr);
 
 private:
-//  void showEvent(QShowEvent *event) override;
-
   void updateState(const UIState &s);
-
-  void checkForUpdates(){};
-
 };
