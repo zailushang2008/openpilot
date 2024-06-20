@@ -105,7 +105,7 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
  //carBtn->setFixedSize(1500, 80);
 
   connect(carBtn, &QPushButton::clicked, [&]() {
-    for(auto &v:toggles)
+    for (auto &v:toggles)
     {
         v.second->hide();
     }
@@ -124,28 +124,27 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   QStringList strList;
   while (fgets(buf, sizeof(buf), in) != NULL)
   {
-	    printf("%s", buf);
-	    strList.append(buf);
+      printf("%s", buf);
+      strList.append(buf);
   }
   fclose(in);
 
   QStandardItemModel  *ItemModel = new QStandardItemModel(this);
 
   int nCount = strList.size();
-  for(int i = 0; i < nCount; i++)
-  {
-	    QString string = static_cast<QString>(strList.at(i));
-	    QStandardItem *item = new QStandardItem(string);
-	    ItemModel->appendRow(item);
+  for (int i = 0; i < nCount; i++) {
+      QString string = static_cast<QString>(strList.at(i));
+      QStandardItem *item = new QStandardItem(string);
+      ItemModel->appendRow(item);
   }
 
   listView->setModel(ItemModel);
   listView->setFixedSize(1600, 800);
   listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-  listView->verticalScrollBar()->setStyleSheet("QScrollBar{background: #F0F0F0; width:60px ;margin-top:32px;margin-bottom:32px }\
-  ""QScrollBar::handle:vertical{ background: red; min-height: 160px ;width:60px }\
-  ""QScrollBar::sub-line:vertical{height:32px;subcontrol-position:top;subcontrol-origin:margin;}\
-  ""QScrollBar::add-line:vertical{height:32px;subcontrol-position:bottom;subcontrol-origin:margin;}");
+  listView->verticalScrollBar()->setStyleSheet("QScrollBar{background: #F0F0F0; width:60px; margin-top:32px; margin-bottom:32px }\
+  ""QScrollBar::handle:vertical{ background: red; min-height: 160px; width:60px }\
+  ""QScrollBar::sub-line:vertical{height:32px; subcontrol-position:top; subcontrol-origin:margin; }\
+  ""QScrollBar::add-line:vertical{height:32px; subcontrol-position:bottom; subcontrol-origin:margin; }");
   addItem(listView);
   listView->hide();
 
@@ -187,8 +186,7 @@ void TogglesPanel::itemClicked(QModelIndex index){
   this->long_personality_setting->show();
   this->listView->hide();
 
-  for(auto &v:this->toggles)
-  {
+  for (auto &v:this->toggles) {
     v.second->show();
   }
 }

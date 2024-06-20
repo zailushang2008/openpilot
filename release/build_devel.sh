@@ -43,8 +43,13 @@ git clean -xdff
 # do the files copy
 echo "[-] copying files T=$SECONDS"
 cd $SOURCE_DIR
-mkdir -p $TARGET_DIR/release
-cp -pR --parents $(./release/release_files.py) $TARGET_DIR/release/release_files.py
+
+for entry in "$TARGET_DIR"/*
+do
+  echo "$entry"
+done
+
+cp -pR --parents $(./release/release_files.py) $TARGET_DIR
 
 # in the directory
 cd $TARGET_DIR
