@@ -96,8 +96,6 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
     map_settings_btn->setVisible(!hideBottomIcons);
     main_layout->setAlignment(map_settings_btn, (rightHandDM ? Qt::AlignLeft : Qt::AlignRight) | Qt::AlignBottom);
   }
-
-  update();
 }
 
 void AnnotatedCameraWidget::drawHud(QPainter &p) {
