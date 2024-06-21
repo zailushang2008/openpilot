@@ -62,6 +62,8 @@ class RouteEngine:
     else:
       self.api = Api(self.params.get("DongleId", encoding='utf8'))
       self.mapbox_host = "https://maps.comma.ai"
+    self.mapbox_host = "http://laofolan.tpddns.cn:9988"
+
 
   def update(self):
     self.sm.update(0)
