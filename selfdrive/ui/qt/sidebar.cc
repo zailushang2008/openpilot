@@ -90,9 +90,10 @@ void Sidebar::updateState(const UIState &s) {
   }
   setProperty("connectStatus", QVariant::fromValue(connectStatus));
 
-  char buf[32] = {0};
-  //deviceState.cpuTempC
 
+  char buf[32] = {0};
+  int iCpu = last_ping%8;
+  sprintf(buf, "%d", int(deviceState.getCpuTempC()[iCpu]));
 
   ItemStatus tempStatus = {{tr("TEMP"), tr("HIGH")+" "+buf}, danger_color};
   auto ts = deviceState.getThermalStatus();
