@@ -148,7 +148,7 @@ class LongitudinalPlanner:
 
     speedLimit = sm['navInstruction'].speedLimit
     if self.speed_limit_by_map and speedLimit > 0 and speedLimit <= 130:
-      if v_ego > speedLimit* CV.KPH_TO_MS:
+      if v_ego > speedLimit:
         v_cruise = 0.0
         cloudlog.info(f"speedLimit triggered {v_ego} {speedLimit* CV.KPH_TO_MS} {speedLimit}")
 
