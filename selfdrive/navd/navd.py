@@ -379,7 +379,7 @@ class RouteEngine:
     v_point = Coordinate(y_val,v)
     distance = v_point.distance_to(self.last_position)
 
-    if distance < REROUTE_DISTANCE*4:
+    if distance < REROUTE_DISTANCE*2:
       return False
 
     cloudlog.warning(f"should_recompute distanc={distance} v_point={v_point} last_position={self.last_position}")
