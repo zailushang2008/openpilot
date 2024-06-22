@@ -275,6 +275,15 @@ def hardware_thread(end_event, hw_queue) -> None:
     all_comp_temp = all_temp_filter.update(max(temp_sources))
     msg.deviceState.maxTempC = all_comp_temp
 
+    try:
+      with open("/data/params/d/Temperature", 'w') as f:
+        f.write(str(int(all_comp_temp)))
+      with open("/data/params/d/TemperatureAll", 'w') as f:
+        f.write(str(temp_sources))
+    except Exception as e:
+      print(e)
+
+
     if fan_controller is not None:
       msg.deviceState.fanSpeedPercentDesired = fan_controller.update(all_comp_temp, onroad_conditions["ignition"])
 

@@ -92,8 +92,13 @@ void Sidebar::updateState(const UIState &s) {
 
 
   char buf[32] = {0};
-  int iCpu = last_ping%8;
-  sprintf(buf, "%d", int(deviceState.getCpuTempC()[iCpu]));
+  FILE *in= fopen("/data/params/d/Temperature", "r");
+  if (in) {
+    fgets(buf, sizeof(buf), in);
+    fclose(in);
+    buf[4] = 0;
+  }
+
 
   ItemStatus tempStatus = {{tr("TEMP"), tr("HIGH")+" "+buf}, danger_color};
   auto ts = deviceState.getThermalStatus();

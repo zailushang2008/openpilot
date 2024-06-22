@@ -108,7 +108,6 @@ class LongitudinalPlanner:
     if self.param_read_cnt % 50 == 0:
       self.dynamic_endtoend_controller.set_enabled(self.params.get_bool("FpDynamicE2E"))
       self.speed_limit_by_map = self.params.get_bool("FpSpeedLimitMap")
-      self.mpc.set_params(self.params.get_bool("FpDynamicFollow"))
     self.param_read_cnt += 1
 
     if self.dynamic_endtoend_controller.is_enabled():
@@ -151,7 +150,7 @@ class LongitudinalPlanner:
     if self.speed_limit_by_map and speedLimit > 0 and speedLimit <= 130:
       if v_ego > speedLimit* CV.KPH_TO_MS:
         v_cruise = 0.0
-        cloudlog.info("speedLimit triggered")
+        cloudlog.info(f"speedLimit triggered {v_ego} {speedLimit* CV.KPH_TO_MS} {speedLimit}")
 
     if force_slow_decel or self.fcw:
       v_cruise = 0.0

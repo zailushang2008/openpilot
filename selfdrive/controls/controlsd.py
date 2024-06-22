@@ -846,9 +846,9 @@ class Controls:
       if self.CP.notCar:
         self.joystick_mode = self.params.get_bool("JoystickDebugMode")
 
-      self.fp_alka = self.card.fp_alka
+      self.fp_alka = self.params.get_bool("FpLKA")
 
-      time.sleep(0.1)
+      time.sleep(1)
 
   def controlsd_thread(self):
     e = threading.Event()

@@ -6,6 +6,7 @@ from cereal import log
 from openpilot.common.numpy_fast import clip
 from openpilot.common.realtime import DT_MDL
 from openpilot.common.swaglog import cloudlog
+from openpilot.common.params import Params
 # WARNING: imports outside of constants will not trigger a rebuild
 from openpilot.selfdrive.modeld.constants import index_function
 from openpilot.selfdrive.car.interfaces import ACCEL_MIN
@@ -44,7 +45,8 @@ LEAD_DANGER_FACTOR = 0.75
 LIMIT_COST = 1e6
 ACADOS_SOLVER_TYPE = 'SQP_RTI'
 
-_dynamic_follow = False
+params = Params()
+_dynamic_follow = params.get_bool("FpDynamicFollow")
 
 # Fewer timestamps don't hurt performance and lead to
 # much better convergence of the MPC with low iterations
@@ -296,9 +298,6 @@ class LongitudinalMpc:
     Zl = np.array(constraint_cost_weights)
     for i in range(N):
       self.solver.cost_set(i, 'Zl', Zl)
-
-  def set_params(self, dynamic_follow=False):
-    _dynamic_follow = dynamic_follow
 
   def set_weights(self, prev_accel_constraint=True, personality=log.LongitudinalPersonality.standard):
     jerk_factor = get_jerk_factor(personality)
