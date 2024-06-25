@@ -8,6 +8,8 @@ from openpilot.selfdrive.car.toyota.values import CAR, STATIC_DSU_MSGS, NO_STOP_
                                         UNSUPPORTED_DSU_CAR
 from opendbc.can.packer import CANPacker
 
+from openpilot.selfdrive.fp.toyota_door_lock_controller import DoorLockController
+
 SteerControlType = car.CarParams.SteerControlType
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -41,6 +43,7 @@ class CarController(CarControllerBase):
     self.packer = CANPacker(dbc_name)
     self.gas = 0
     self.accel = 0
+    self.dlc = DoorLockController()
 
   def update(self, CC, CS, now_nanos):
     actuators = CC.actuators
@@ -50,6 +53,10 @@ class CarController(CarControllerBase):
 
     # *** control msgs ***
     can_sends = []
+
+    result = self.dlc.process(CS.out.gearShifter, CS.out.vEgo, CS.out.doorOpen)
+    if result:
+      can_sends.append(make_can_msg(result[0], result[1], result[2]))
 
     # *** steer torque ***
     new_steer = int(round(actuators.steer * self.params.STEER_MAX))
