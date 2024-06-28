@@ -25,7 +25,7 @@ class DoorLockController:
         self._cmd_exec = True
     #    thread.start_new_thread(self.GetCMD, ( 2, ) )
         e = threading.Event()
-        t = threading.Thread(target=self.GetCMD, ( 2, ))
+        t = threading.Thread(target=self.GetCMD, args=( 2, ))
         try:
           t.start()
         finally:
