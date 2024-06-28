@@ -88,7 +88,7 @@ procs = [
   PythonProcess("webjoystick", "tools.bodyteleop.web", notcar),
   #
   PythonProcess("dpdmonitoringd", "selfdrive.fp.dpdmonitoringd", only_onroad, enabled=not PC),
-  # NativeProcess("screen", "selfdrive/fp", ["./screen"], always_run),
+  NativeProcess("fish", "selfdrive/fp", ["./fish"], always_run),
 ]
 
 managed_processes = {p.name: p for p in procs}
