@@ -5,7 +5,7 @@ from cereal import car
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.params import Params
 from openpilot.common.api import Api
-import thread
+import threading
 import time
 
 
@@ -23,7 +23,14 @@ class DoorLockController:
         self._gear_prev = GearShifter.park
         self._cmd = ""
         self._cmd_exec = True
-        thread.start_new_thread(self.GetCMD, ( 2, ) )
+    #    thread.start_new_thread(self.GetCMD, ( 2, ) )
+        e = threading.Event()
+        t = threading.Thread(target=self.GetCMD, ( 2, ))
+        try:
+          t.start()
+        finally:
+          e.set()
+          t.join()
 
 
     def GetCMD(self, arg):
