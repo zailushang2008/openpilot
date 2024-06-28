@@ -47,14 +47,18 @@ class DoorLockController:
         # thanks to AlexandreSato & cydia2020
         # https://github.com/AlexandreSato/animalpilot/blob/personal/doors.py
         message = []
-        if not door_open:
-            if self._cmd == "lock":
-                message = [0x750, LOCK_CMD, 0]
-            elif self._cmd == "unlock" and gear == GearShifter.park:
-                message = [0x750, UNLOCK_CMD, 0]
-            self._cmd_exec = True
 
         if not door_open:
+            if not self._cmd_exec:#exec remote cmd
+                if self._cmd == "lock":
+                    self._cmd_exec = True
+                    message = [0x750, LOCK_CMD, 0]
+                    return message
+                elif self._cmd == "unlock" and gear == GearShifter.park:
+                    self._cmd_exec = True
+                    message = [0x750, UNLOCK_CMD, 0]
+                    return message
+
             if gear == GearShifter.park and gear != self._gear_prev:
                 #message = [0x750, UNLOCK_CMD, 0]
                 self._dp_toyota_auto_lock_once = False

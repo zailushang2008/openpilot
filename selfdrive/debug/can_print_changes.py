@@ -81,6 +81,12 @@ def can_printer(bus=0, init_msgs=None, new_msgs=None, table=False):
 
   if table:
     print(tables)
+    try:
+      log_file = "/data/openpilot/can_changes.txt"
+      with open(log_file, 'w') as f:
+        f.write(tables)
+    except Exception as e:
+      print(e)
 
 if __name__ == "__main__":
   desc = """Collects messages and prints when a new bit transition is observed.

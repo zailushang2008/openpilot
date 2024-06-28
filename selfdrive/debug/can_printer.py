@@ -30,6 +30,14 @@ def can_printer(bus, max_msg, addr, ascii_decode):
         if max_msg is None or addr < max_msg:
           dd += "%04X(%4d)(%6d)(%3dHz) %s %s\n" % (addr, addr, len(msgs[addr]), freq, x.ljust(20), a)
       print(dd)
+
+      try:
+        log_file = "/data/openpilot/can_print.txt"
+        with open(log_file, 'w') as f:
+          f.write(dd)
+      except Exception as e:
+        print(e)
+
       lp = time.monotonic()
 
 if __name__ == "__main__":
