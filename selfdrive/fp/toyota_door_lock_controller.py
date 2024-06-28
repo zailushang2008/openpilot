@@ -49,12 +49,14 @@ class DoorLockController:
         message = []
 
         if not door_open:
-            if not self._cmd_exec:#exec remote cmd
+            if not self._cmd_exec: # exec remote cmd
                 if self._cmd == "lock":
+                    self._cmd = ""
                     self._cmd_exec = True
                     message = [0x750, LOCK_CMD, 0]
                     return message
                 elif self._cmd == "unlock" and gear == GearShifter.park:
+                    self._cmd = ""
                     self._cmd_exec = True
                     message = [0x750, UNLOCK_CMD, 0]
                     return message
