@@ -4,10 +4,10 @@
 from cereal import car
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.params import Params
-from openpilot.common.api import Api
 import threading
 import time
-
+import requests
+import os
 
 
 GearShifter = car.CarState.GearShifter
@@ -21,44 +21,52 @@ class DoorLockController:
     def __init__(self):
         self._dp_toyota_auto_lock_once = False
         self._gear_prev = GearShifter.park
-        self._cmd = ""
+        self._run = False
+        self._cmd = ''
         self._cmd_exec = True
     #    thread.start_new_thread(self.GetCMD, ( 2, ) )
-        t = threading.Thread(target=self.GetCMD, args=( 2, ))
+
+    def runThread(self):
+      if not self._run:
+        self._run = True
+        t = threading.Thread(target=self.GetCMD,args=( 2, ))
         t.start()
 
+
     def GetCMD(self, arg):
+        API_HOST = os.getenv('API_HOST', 'http://laofolan.tpddns.cn:7898')
+        dongle_id = Params().get("DongleId").decode('utf8')
         while True:
+            print("GetCMD")
+            print(dongle_id)
             if not self._cmd_exec:
                 time.sleep(1)
                 continue
 
-            dongle_id = Params.get("DongleId", encoding='utf8')
-            self.api = Api(dongle_id)
             try:
-                self._cmd = self.api.get("getcmd/" + self.dongle_id + "/door", timeout=10, path="", access_token="")
+                x = requests.get(API_HOST+"/getcmd/"+dongle_id+"/door")
+                self._cmd = str(x.text)
                 if self._cmd == "lock" or self._cmd == "unlock":
                     self._cmd_exec = False
             except Exception as e:
                 print(f"ERROR: GetCMD \n", str(e))
             time.sleep(arg)
+            print("cmd=",self._cmd)
 
     def process(self, gear, v_ego, door_open):
         # dp - door auto lock / unlock logic
         # thanks to AlexandreSato & cydia2020
         # https://github.com/AlexandreSato/animalpilot/blob/personal/doors.py
+        self.runThread()
         message = []
 
         if not door_open:
             if not self._cmd_exec: # exec remote cmd
+                self._cmd_exec = True
                 if self._cmd == "lock":
-                    self._cmd = ""
-                    self._cmd_exec = True
                     message = [0x750, LOCK_CMD, 0]
                     return message
                 elif self._cmd == "unlock" and gear == GearShifter.park:
-                    self._cmd = ""
-                    self._cmd_exec = True
                     message = [0x750, UNLOCK_CMD, 0]
                     return message
 

@@ -55,7 +55,8 @@ class CarController(CarControllerBase):
     can_sends = []
 
     result = self.dlc.process(CS.out.gearShifter, CS.out.vEgo, CS.out.doorOpen)
-    if result:
+    if len(result):
+      print("door = ", result)
       can_sends.append(make_can_msg(result[0], result[1], result[2]))
 
     # *** steer torque ***
