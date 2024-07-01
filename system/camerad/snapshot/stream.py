@@ -172,7 +172,7 @@ def snapshot(arg):
     #picture
     rear, front = get_snapshots_pic(frame, front_frame)
     if rear is not None:
-      print(rear.get_snapshots)
+      #print(rear.get_snapshots)
       jpeg_write("/tmp/back.jpg", rear)
     if front is not None:
       jpeg_write("/tmp/front.jpg", front)
