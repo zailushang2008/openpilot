@@ -172,9 +172,12 @@ def snapshot(arg):
     if not PC and not camera_is_running:
       managed_processes['camerad'].start()
 
+    frame = None
     if arg == 2:
       frame = "wideRoadCameraState"
     #frame = "roadCameraState"
+
+    front_frame = None
     if arg == 1:
       front_frame = "driverCameraState" if front_camera_allowed else None
     #stream
