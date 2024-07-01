@@ -176,8 +176,6 @@ def snapshot(arg):
     #frame = "roadCameraState"
 
     front_frame = "driverCameraState" if front_camera_allowed else None
-    #stream
-    #get_snapshots(frame, front_frame)
 
     #picture
     rear, front = get_snapshots_pic(frame, front_frame, camera_is_running)
@@ -193,8 +191,6 @@ def snapshot(arg):
 
   if not front_camera_allowed:
     front = None
-
-  #return rear, front
 
 
 if __name__ == "__main__":
