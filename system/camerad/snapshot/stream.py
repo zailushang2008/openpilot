@@ -154,9 +154,9 @@ def snapshot(arg):
     subprocess.check_call(["pgrep", "camerad"])
     camera_is_running = True
     print("Camerad already running")
-    params.put_bool("IsTakingSnapshot", False)
-    params.remove("Offroad_IsTakingSnapshot")
-    return None, None
+    #params.put_bool("IsTakingSnapshot", False)
+    #params.remove("Offroad_IsTakingSnapshot")
+    #return None, None
   except subprocess.CalledProcessError:
     pass
 
