@@ -118,8 +118,8 @@ def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState"):
   sm = messaging.SubMaster(sockets)
   vipc_clients = {s: VisionIpcClient("camerad", VISION_STREAMS[s], True) for s in sockets}
 
-  # wait 4 sec from camerad startup for focus and exposure
-  while sm[sockets[0]].frameId < int(4. / DT_MDL):
+  # wait 1 sec from camerad startup for focus and exposure
+  while sm[sockets[0]].frameId < int(1. / DT_MDL):
     sm.update()
 
   for client in vipc_clients.values():
@@ -143,7 +143,7 @@ def snapshot(arg):
   #   print("Already taking snapshot")
   #   return None, None
 
-  front_camera_allowed = params.get_bool("RecordFront")
+  front_camera_allowed = True #params.get_bool("RecordFront")
   params.put_bool("IsTakingSnapshot", True)
   set_offroad_alert("Offroad_IsTakingSnapshot", True)
   time.sleep(2.0)  # Give hardwared time to read the param, or if just started give camerad time to start
@@ -164,7 +164,7 @@ def snapshot(arg):
       managed_processes['camerad'].start()
 
     frame = "wideRoadCameraState"
-    frame = "roadCameraState"
+    #frame = "roadCameraState"
     front_frame = "driverCameraState" if front_camera_allowed else None
     #stream
     #get_snapshots(frame, front_frame)
@@ -172,13 +172,12 @@ def snapshot(arg):
     #picture
     rear, front = get_snapshots_pic(frame, front_frame)
     if rear is not None:
-      #print(rear.get_snapshots)
       jpeg_write("/tmp/back.jpg", rear)
     if front is not None:
       jpeg_write("/tmp/front.jpg", front)
 
   finally:
-    managed_processes['camerad'].stop()
+    #managed_processes['camerad'].stop()
     params.put_bool("IsTakingSnapshot", False)
     set_offroad_alert("Offroad_IsTakingSnapshot", False)
 
@@ -189,11 +188,12 @@ def snapshot(arg):
 
 
 if __name__ == "__main__":
-  t = threading.Thread(target=snapshot, args=(0, ))
-  t.daemon = True
-  t.start()
-  time.sleep(3600)
-  #snapshot()
+  # t = threading.Thread(target=snapshot, args=(0, ))
+  # t.daemon = True
+  # t.start()
+  # time.sleep(3600)
+
+  snapshot()
 
   # pic, fpic = snapshot()
   # if pic is not None:
