@@ -122,7 +122,7 @@ def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState", 
 
   if camera_is_running:
     # wait 1 sec from camerad startup for focus and exposure
-    while sm[sockets[0]].frameId < int(1 / DT_MDL):
+    while sm[sockets[0]].frameId < int(1. / DT_MDL):
       sm.update()
   else:
     # wait 1 sec from camerad startup for focus and exposure
@@ -138,7 +138,6 @@ def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState", 
     c = vipc_clients[frame]
     rear = extract_image_pic(c.recv())
   if front_frame is not None and int(sys.argv[1])==1:
-    print("extract_image_pic")
     c = vipc_clients[front_frame]
     front = extract_image_pic(c.recv())
   return rear, front
@@ -202,16 +201,6 @@ if __name__ == "__main__":
   # t = threading.Thread(target=snapshot, args=(0, ))
   # t.daemon = True
   # t.start()
-  # time.sleep(3600)
 
   snapshot(sys.argv[1])
-
-  # pic, fpic = snapshot()
-  # if pic is not None:
-  #   print(pic.shape)
-  #   jpeg_write("/tmp/back.jpg", pic)
-  #   if fpic is not None:
-  #     jpeg_write("/tmp/front.jpg", fpic)
-  # else:
-  #   print("Error taking snapshot")
 
