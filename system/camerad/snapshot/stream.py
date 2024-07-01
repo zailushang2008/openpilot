@@ -3,6 +3,8 @@ import subprocess
 import time
 import requests
 import threading
+import sys
+
 
 import numpy as np
 from PIL import Image
@@ -113,14 +115,19 @@ def get_snapshots(frame="roadCameraState", front_frame="driverCameraState"):
   return
   return rear, front
 
-def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState"):
+def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState", camera_is_running):
   sockets = [s for s in (frame, front_frame) if s is not None]
   sm = messaging.SubMaster(sockets)
   vipc_clients = {s: VisionIpcClient("camerad", VISION_STREAMS[s], True) for s in sockets}
 
-  # wait 1 sec from camerad startup for focus and exposure
-  while sm[sockets[0]].frameId < int(1. / DT_MDL):
-    sm.update()
+  if camera_is_running:
+    # wait 1 sec from camerad startup for focus and exposure
+    while sm[sockets[0]].frameId < int(1 / DT_MDL):
+      sm.update()
+  else:
+    # wait 1 sec from camerad startup for focus and exposure
+    while sm[sockets[0]].frameId < int(1. / DT_MDL):
+      sm.update()
 
   for client in vipc_clients.values():
     client.connect(True)
@@ -146,7 +153,7 @@ def snapshot(arg):
   front_camera_allowed = True #params.get_bool("RecordFront")
   params.put_bool("IsTakingSnapshot", True)
   set_offroad_alert("Offroad_IsTakingSnapshot", True)
-  time.sleep(2.0)  # Give hardwared time to read the param, or if just started give camerad time to start
+  #time.sleep(2.0)  # Give hardwared time to read the param, or if just started give camerad time to start
 
   # Check if camerad is already started
   camera_is_running = False
@@ -165,14 +172,16 @@ def snapshot(arg):
     if not PC and not camera_is_running:
       managed_processes['camerad'].start()
 
-    frame = "wideRoadCameraState"
+    if arg == 2:
+      frame = "wideRoadCameraState"
     #frame = "roadCameraState"
-    front_frame = "driverCameraState" if front_camera_allowed else None
+    if arg == 1:
+      front_frame = "driverCameraState" if front_camera_allowed else None
     #stream
     #get_snapshots(frame, front_frame)
 
     #picture
-    rear, front = get_snapshots_pic(frame, front_frame)
+    rear, front = get_snapshots_pic(frame, front_frame, camera_is_running)
     if rear is not None:
       jpeg_write("/tmp/back.jpg", rear)
     if front is not None:
@@ -195,7 +204,7 @@ if __name__ == "__main__":
   # t.start()
   # time.sleep(3600)
 
-  snapshot(1)
+  snapshot(sys.argv[1])
 
   # pic, fpic = snapshot()
   # if pic is not None:
