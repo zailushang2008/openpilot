@@ -115,7 +115,7 @@ def get_snapshots(frame="roadCameraState", front_frame="driverCameraState"):
   return
   return rear, front
 
-def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState", camera_is_running):
+def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState", camera_is_running=False):
   sockets = [s for s in (frame, front_frame) if s is not None]
   sm = messaging.SubMaster(sockets)
   vipc_clients = {s: VisionIpcClient("camerad", VISION_STREAMS[s], True) for s in sockets}
