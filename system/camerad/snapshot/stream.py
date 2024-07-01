@@ -72,6 +72,13 @@ def extract_image(buf):
   return yuv_to_rgb(y, u, v)
 
 
+def extract_image_pic(buf):
+  y = np.array(buf.data[:buf.uv_offset], dtype=np.uint8).reshape((-1, buf.stride))[:buf.height, :buf.width]
+  u = np.array(buf.data[buf.uv_offset::2], dtype=np.uint8).reshape((-1, buf.stride//2))[:buf.height//2, :buf.width//2]
+  v = np.array(buf.data[buf.uv_offset+1::2], dtype=np.uint8).reshape((-1, buf.stride//2))[:buf.height//2, :buf.width//2]
+
+  return yuv_to_rgb(y, u, v)
+
 def get_snapshots(frame="roadCameraState", front_frame="driverCameraState"):
   sockets = [s for s in (frame, front_frame) if s is not None]
   sm = messaging.SubMaster(sockets)
@@ -98,7 +105,7 @@ def get_snapshots(frame="roadCameraState", front_frame="driverCameraState"):
       time_start = time.time()
       front = extract_image(c.recv())
       time_end = time.time()
-      cost = int(round(time_end * 1000))  - int(round(time_start * 1000)) 
+      cost = int(round(time_end * 1000))  - int(round(time_start * 1000))
       if cost < 50:
         print(50-cost)
         time.sleep(0.001*(50-cost-1))
@@ -106,6 +113,27 @@ def get_snapshots(frame="roadCameraState", front_frame="driverCameraState"):
   return
   return rear, front
 
+def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState"):
+  sockets = [s for s in (frame, front_frame) if s is not None]
+  sm = messaging.SubMaster(sockets)
+  vipc_clients = {s: VisionIpcClient("camerad", VISION_STREAMS[s], True) for s in sockets}
+
+  # wait 4 sec from camerad startup for focus and exposure
+  while sm[sockets[0]].frameId < int(4. / DT_MDL):
+    sm.update()
+
+  for client in vipc_clients.values():
+    client.connect(True)
+
+  # grab images
+  rear, front = None, None
+  if frame is not None:
+    c = vipc_clients[frame]
+    rear = extract_image_pic(c.recv())
+  if front_frame is not None:
+    c = vipc_clients[front_frame]
+    front = extract_image_pic(c.recv())
+  return rear, front
 
 def snapshot(arg):
   print(arg)
@@ -138,8 +166,16 @@ def snapshot(arg):
     frame = "wideRoadCameraState"
     frame = "roadCameraState"
     front_frame = "driverCameraState" if front_camera_allowed else None
-    get_snapshots(frame, front_frame)
-    #rear, front = get_snapshots(frame, front_frame)
+    #stream
+    #get_snapshots(frame, front_frame)
+
+    #picture
+    rear, front = get_snapshots_pic(frame, front_frame)
+    if rear is not None:
+      print(rear.get_snapshots)
+      jpeg_write("/tmp/back.jpg", rear)
+    if front is not None:
+      jpeg_write("/tmp/front.jpg", front)
 
   finally:
     managed_processes['camerad'].stop()
@@ -149,7 +185,7 @@ def snapshot(arg):
   if not front_camera_allowed:
     front = None
 
-#  return rear, front
+  #return rear, front
 
 
 if __name__ == "__main__":
