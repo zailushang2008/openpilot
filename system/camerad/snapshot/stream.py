@@ -134,10 +134,10 @@ def get_snapshots_pic(frame="roadCameraState", front_frame="driverCameraState", 
 
   # grab images
   rear, front = None, None
-  if frame is not None:
+  if frame is not None and sys.argv[1]==2:
     c = vipc_clients[frame]
     rear = extract_image_pic(c.recv())
-  if front_frame is not None:
+  if front_frame is not None and sys.argv[1]==1:
     c = vipc_clients[front_frame]
     front = extract_image_pic(c.recv())
   return rear, front
@@ -172,14 +172,10 @@ def snapshot(arg):
     if not PC and not camera_is_running:
       managed_processes['camerad'].start()
 
-    frame = None
-    if arg == 2:
-      frame = "wideRoadCameraState"
+    frame = "wideRoadCameraState"
     #frame = "roadCameraState"
 
-    front_frame = None
-    if arg == 1:
-      front_frame = "driverCameraState" if front_camera_allowed else None
+    front_frame = "driverCameraState" if front_camera_allowed else None
     #stream
     #get_snapshots(frame, front_frame)
 
