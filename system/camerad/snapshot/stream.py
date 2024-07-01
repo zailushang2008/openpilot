@@ -149,8 +149,10 @@ def snapshot(arg):
   time.sleep(2.0)  # Give hardwared time to read the param, or if just started give camerad time to start
 
   # Check if camerad is already started
+  camera_is_running = False
   try:
     subprocess.check_call(["pgrep", "camerad"])
+    camera_is_running = True
     print("Camerad already running")
     params.put_bool("IsTakingSnapshot", False)
     params.remove("Offroad_IsTakingSnapshot")
@@ -160,7 +162,7 @@ def snapshot(arg):
 
   try:
     # Allow testing on replay on PC
-    if not PC:
+    if not PC and not camera_is_running:
       managed_processes['camerad'].start()
 
     frame = "wideRoadCameraState"
