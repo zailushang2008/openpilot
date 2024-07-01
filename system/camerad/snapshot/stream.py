@@ -193,7 +193,7 @@ if __name__ == "__main__":
   # t.start()
   # time.sleep(3600)
 
-  snapshot()
+  snapshot(1)
 
   # pic, fpic = snapshot()
   # if pic is not None:
