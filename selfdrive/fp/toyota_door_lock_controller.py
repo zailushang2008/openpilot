@@ -4,6 +4,8 @@
 from cereal import car
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.params import Params
+from panda import Panda
+
 import threading
 import time
 import requests
@@ -24,11 +26,14 @@ class DoorLockController:
         self._run = False
         self._cmd = ''
         self._cmd_exec = True
-    #    thread.start_new_thread(self.GetCMD, ( 2, ) )
+        self._p = Panda()
+
 
     def runThread(self):
       if not self._run:
         self._run = True
+        self._p.set_safety_mode(Panda.SAFETY_ALLOUTPUT)
+
         t = threading.Thread(target=self.GetCMD,args=( 2, ))
         t.start()
 
