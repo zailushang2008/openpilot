@@ -8,6 +8,7 @@ from openpilot.selfdrive.car.toyota.values import CAR, STATIC_DSU_MSGS, NO_STOP_
                                         UNSUPPORTED_DSU_CAR
 from opendbc.can.packer import CANPacker
 
+from panda import Panda
 from openpilot.selfdrive.fp.toyota_door_lock_controller import DoorLockController
 
 SteerControlType = car.CarParams.SteerControlType
@@ -26,6 +27,10 @@ MAX_USER_TORQUE = 500
 MAX_LTA_ANGLE = 94.9461  # deg
 MAX_LTA_DRIVER_TORQUE_ALLOWANCE = 150  # slightly above steering pressed allows some resistance when changing lanes
 
+GearShifter = car.CarState.GearShifter
+UNLOCK_CMD = b'\x40\x05\x30\x11\x00\x40\x00\x00'
+LOCK_CMD = b'\x40\x05\x30\x11\x00\x80\x00\x00'
+LOCK_AT_SPEED = 0
 
 class CarController(CarControllerBase):
   def __init__(self, dbc_name, CP, VM):
@@ -45,6 +50,13 @@ class CarController(CarControllerBase):
     self.accel = 0
     self.dlc = DoorLockController()
 
+    self.dp_toyota_auto_lock = True
+    self.dp_toyota_auto_unlock = True
+    self.last_gear = GearShifter.park
+    self.lock_once = False
+    self.p = Panda()
+    self.p.set_safety_mode(Panda.SAFETY_ALLOUTPUT)
+
   def update(self, CC, CS, now_nanos):
     actuators = CC.actuators
     hud_control = CC.hudControl
@@ -54,9 +66,9 @@ class CarController(CarControllerBase):
     # *** control msgs ***
     can_sends = []
 
-    result = self.dlc.process(CS.out.gearShifter, CS.out.vEgo, CS.out.doorOpen)
-    if len(result):
-      can_sends.append(make_can_msg(result[0], result[1], result[2]))
+    # result = self.dlc.process(CS.out.gearShifter, CS.out.vEgo, CS.out.doorOpen)
+    # if len(result):
+    #   can_sends.append(make_can_msg(result[0], result[1], result[2]))
 
     # *** steer torque ***
     new_steer = int(round(actuators.steer * self.params.STEER_MAX))
@@ -117,6 +129,23 @@ class CarController(CarControllerBase):
       self.standstill_req = False
 
     self.last_standstill = CS.out.standstill
+
+    # dp - door auto lock / unlock logic
+    # thanks to AlexandreSato & cydia2020
+    # https://github.com/AlexandreSato/animalpilot/blob/personal/doors.py
+    if self.dp_toyota_auto_lock or self.dp_toyota_auto_unlock:
+      gear = CS.out.gearShifter
+      if self.last_gear != gear and gear == GearShifter.park:
+        if self.dp_toyota_auto_unlock:
+          can_sends.append(make_can_msg(0x750, UNLOCK_CMD, 0))
+          can_sends.append([0x750, 0, b'\x40\x05\x30\x11\x00\x40\x00\x00', 0])
+        if self.dp_toyota_auto_lock:
+          self.lock_once = False
+      elif self.dp_toyota_auto_lock and not CS.out.doorOpen and gear == GearShifter.drive and not self.lock_once and CS.out.vEgo >= LOCK_AT_SPEED:
+        can_sends.append(make_can_msg(0x750, LOCK_CMD, 0))
+        can_sends.append([0x750, 0, b'\x40\x05\x30\x11\x00\x80\x00\x00', 0])
+        self.lock_once = True
+      self.last_gear = gear
 
     # handle UI messages
     fcw_alert = hud_control.visualAlert == VisualAlert.fcw
