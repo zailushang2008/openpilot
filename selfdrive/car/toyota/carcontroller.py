@@ -133,20 +133,6 @@ class CarController(CarControllerBase):
     # dp - door auto lock / unlock logic
     # thanks to AlexandreSato & cydia2020
     # https://github.com/AlexandreSato/animalpilot/blob/personal/doors.py
-    if self.dp_toyota_auto_lock or self.dp_toyota_auto_unlock:
-      gear = CS.out.gearShifter
-      if self.last_gear != gear and gear == GearShifter.park:
-        if self.dp_toyota_auto_unlock:
-          # can_sends.append(make_can_msg(0x750, UNLOCK_CMD, 0))
-          can_sends.append([0x750, 0, b'\x40\x05\x30\x11\x00\x40\x00\x00', 0])
-        if self.dp_toyota_auto_lock:
-          self.lock_once = False
-      elif self.dp_toyota_auto_lock and not CS.out.doorOpen and gear == GearShifter.drive and not self.lock_once and CS.out.vEgo >= LOCK_AT_SPEED:
-        # can_sends.append(make_can_msg(0x750, LOCK_CMD, 0))
-        #can_sends.append([0x750, 0, b'\x40\x05\x30\x11\x00\x80\x00\x00', 0])
-        #can_sends.append(toyotacan.create_door_command(self.packer))
-        self.lock_once = True
-      self.last_gear = gear
 
     # handle UI messages
     fcw_alert = hud_control.visualAlert == VisualAlert.fcw
