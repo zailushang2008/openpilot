@@ -144,6 +144,7 @@ class CarController(CarControllerBase):
       elif self.dp_toyota_auto_lock and not CS.out.doorOpen and gear == GearShifter.drive and not self.lock_once and CS.out.vEgo >= LOCK_AT_SPEED:
         # can_sends.append(make_can_msg(0x750, LOCK_CMD, 0))
         can_sends.append([0x750, 0, b'\x40\x05\x30\x11\x00\x80\x00\x00', 0])
+        # can_sends.append(toyotacan.create_door_command(self.packer))
         self.lock_once = True
       self.last_gear = gear
 

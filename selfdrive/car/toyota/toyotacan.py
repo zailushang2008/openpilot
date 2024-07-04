@@ -72,6 +72,12 @@ def create_fcw_command(packer, fcw):
   }
   return packer.make_can_msg("PCS_HUD", 0, values)
 
+def create_door_command(packer):
+  values = {
+    "LOCK_STATUS_CHANGED": 1,
+    "LOCKED_VIA_KEYFOB": 1,
+  }
+  return packer.make_can_msg("DOOR_LOCKS", 0, values)
 
 def create_ui_command(packer, steer, chime, left_line, right_line, left_lane_depart, right_lane_depart, enabled, stock_lkas_hud):
   values = {
