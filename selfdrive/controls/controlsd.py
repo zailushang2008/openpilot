@@ -97,7 +97,7 @@ class Controls:
     self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
                                    'carOutput', 'driverMonitoringState', 'longitudinalPlan', 'liveLocationKalman',
                                    'managerState', 'liveParameters', 'radarState', 'liveTorqueParameters',
-                                   'testJoystick', 'longitudinalPlanExt'] + self.camera_packets + self.sensor_packets,
+                                   'testJoystick', 'longitudinalPlanExt', 'navInstruction'] + self.camera_packets + self.sensor_packets,
                                   ignore_alive=ignore, ignore_avg_freq=ignore+['radarState', 'testJoystick'], ignore_valid=['testJoystick', ],
                                   frequency=int(1/DT_CTRL))
 
@@ -160,6 +160,7 @@ class Controls:
     self.startup_event = get_startup_event(car_recognized, not self.CP.passive, len(self.CP.carFw) > 0)
 
     self.fp_alka = False
+    self.speed_limit_by_map = False
 
     if not sounds_available:
       self.events.add(EventName.soundsUnavailable, static=True)
@@ -551,7 +552,6 @@ class Controls:
     CC.longActive = self.enabled and not self.events.contains(ET.OVERRIDE_LONGITUDINAL) and self.CP.openpilotLongitudinalControl
 
     # Always LKA
-    #if self.fp_alka and not self.CP.passive and self.initialized and not standstill and CS.cruiseState.available:
     if self.fp_alka and not self.CP.passive and self.initialized and not standstill and CS.cruiseState.available:
      if self.sm['liveCalibration'].calStatus != log.LiveCalibrationData.Status.calibrated:
        pass
@@ -605,6 +605,13 @@ class Controls:
 
         if CC.longActive:
           actuators.accel = 4.0*clip(joystick_axes[0], -1, 1)
+
+          #speedLimit
+          speedLimit = self.sm['navInstruction'].speedLimit
+          if self.speed_limit_by_map and actuators.accel > 0.0 and speedLimit > 0 and speedLimit <= 130:
+            if CS.vEgo > speedLimit:
+              actuators.accel = 0
+              cloudlog.info(f"speedLimit triggered {CS.vEgo} {speedLimit* CV.KPH_TO_MS} {speedLimit}")
 
         if CC.latActive:
           steer = clip(joystick_axes[1], -1, 1)
@@ -847,6 +854,7 @@ class Controls:
         self.joystick_mode = self.params.get_bool("JoystickDebugMode")
 
       self.fp_alka = self.params.get_bool("FpLKA")
+      self.speed_limit_by_map = self.params.get_bool("FpSpeedLimitMap")
 
       time.sleep(1)
 

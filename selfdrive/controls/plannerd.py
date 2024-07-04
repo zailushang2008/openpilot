@@ -18,7 +18,7 @@ def plannerd_thread():
 
   longitudinal_planner = LongitudinalPlanner(CP)
   pm = messaging.PubMaster(['longitudinalPlan', 'longitudinalPlanExt'])
-  sm = messaging.SubMaster(['carControl', 'carState', 'controlsState', 'radarState', 'modelV2', 'navInstruction'],
+  sm = messaging.SubMaster(['carControl', 'carState', 'controlsState', 'radarState', 'modelV2'],
                            poll='modelV2', ignore_avg_freq=['radarState'])
 
   while True:
