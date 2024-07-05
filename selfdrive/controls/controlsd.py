@@ -97,8 +97,8 @@ class Controls:
     self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
                                    'carOutput', 'driverMonitoringState', 'longitudinalPlan', 'liveLocationKalman',
                                    'managerState', 'liveParameters', 'radarState', 'liveTorqueParameters',
-                                   'testJoystick', 'longitudinalPlanExt'] + self.camera_packets + self.sensor_packets,
-                                  ignore_alive=ignore, ignore_avg_freq=ignore+['radarState', 'testJoystick'], ignore_valid=['testJoystick', ],
+                                   'testJoystick', 'longitudinalPlanExt','navInstruction'] + self.camera_packets + self.sensor_packets,
+                                  ignore_alive=ignore, ignore_avg_freq=ignore+['radarState', 'testJoystick', 'navInstruction'], ignore_valid=['testJoystick', ],
                                   frequency=int(1/DT_CTRL))
 
     self.joystick_mode = self.params.get_bool("JoystickDebugMode")
@@ -607,11 +607,11 @@ class Controls:
           actuators.accel = 4.0*clip(joystick_axes[0], -1, 1)
 
           #speedLimit
-          #speedLimit = self.sm['navInstruction'].speedLimit
-          #if self.speed_limit_by_map and actuators.accel > 0.0 and speedLimit > 0 and speedLimit <= 130:
-            #if CS.vEgo > speedLimit:
-              #actuators.accel = 0
-              #cloudlog.info(f"speedLimit triggered {CS.vEgo} {speedLimit* CV.KPH_TO_MS} {speedLimit}")
+          speedLimit = self.sm['navInstruction'].speedLimit
+          if self.speed_limit_by_map and actuators.accel > 0.0 and speedLimit > 0 and speedLimit <= 130:
+            if CS.vEgo > speedLimit:
+              actuators.accel = 0
+              cloudlog.info(f"speedLimit triggered {CS.vEgo} {speedLimit* CV.KPH_TO_MS} {speedLimit}")
 
         if CC.latActive:
           steer = clip(joystick_axes[1], -1, 1)
