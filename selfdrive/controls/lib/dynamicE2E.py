@@ -197,21 +197,13 @@ class DynamicEndtoEndController:
   def _radarless_mode(self):
     distance = 30.0
     if self._v_ego_kph >= 120:
-      distance = 90
-    elif self._v_ego_kph > 100 and self._v_ego_kph < 120:
       distance = 40
+    elif self._v_ego_kph > 100 and self._v_ego_kph < 120:
+      distance = 32
     elif self._v_ego_kph > 90 and self._v_ego_kph < 100:
-      distance = 35
-    elif self._v_ego_kph > 80 and self._v_ego_kph < 90:
-      distance = 28
-    elif self._v_ego_kph > 70 and self._v_ego_kph < 80:
-      distance = 26
-    elif self._v_ego_kph > 60 and self._v_ego_kph < 70:
-      distance = 23
-    elif self._v_ego_kph > 50 and self._v_ego_kph < 60:
-      distance = 20
+      distance = 22
     else:
-      distance = 15
+      distance = 9.6
 
     if self._leadOne_distance <= distance:
       self._set_mode('blended')
