@@ -83,9 +83,9 @@ function launch {
 
   # start manager
   cd system/manager
-  if [ ! -f $DIR/prebuilt ]; then
-    ./build.py
-  fi
+  #if [ ! -f $DIR/prebuilt ]; then
+    #./build.py
+  #fi
   ./manager.py
 
   # if broken, keep on screen error
