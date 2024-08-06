@@ -6,7 +6,6 @@ from cereal import log
 from openpilot.common.numpy_fast import clip
 from openpilot.common.realtime import DT_MDL
 from openpilot.common.swaglog import cloudlog
-from openpilot.common.params import Params
 # WARNING: imports outside of constants will not trigger a rebuild
 from openpilot.selfdrive.modeld.constants import index_function
 from openpilot.selfdrive.car.interfaces import ACCEL_MIN
@@ -44,9 +43,14 @@ CRASH_DISTANCE = .25
 LEAD_DANGER_FACTOR = 0.75
 LIMIT_COST = 1e6
 ACADOS_SOLVER_TYPE = 'SQP_RTI'
+_dynamic_follow = False
 
-params = Params()
-_dynamic_follow = params.get_bool("FpDynamicFollow")
+if __name__ == '__main__':  # generating code
+  pass
+else:
+  from openpilot.common.params import Params
+  params = Params()
+  _dynamic_follow = params.get_bool("FpDynamicFollow")
 
 # Fewer timestamps don't hurt performance and lead to
 # much better convergence of the MPC with low iterations
@@ -84,7 +88,7 @@ def get_T_FOLLOW(personality=log.LongitudinalPersonality.standard):
 #From dp
 def get_dynamic_follow(v_ego, personality=log.LongitudinalPersonality.standard):
   if not _dynamic_follow:
-    cloudlog.warning(f"get_dynamic_follow : {_dynamic_follow}")
+#    cloudlog.warning(f"get_dynamic_follow : {_dynamic_follow}")
     return get_T_FOLLOW(personality)
 
   if personality==log.LongitudinalPersonality.relaxed:
